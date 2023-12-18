@@ -11,13 +11,12 @@
 
 
     <artifactId>library</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${project.parent.version}</version>
     <name>library</name>
     <description>library</description>
 
     <properties>
-
-
+        <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <build>

@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: '@project.name@'
+  main:
+    banner-mode: 'off'
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: 'jdbc:postgresql://localhost:5432/ambtsgebied'
+    username: testuser
+    password: 12345
+  flyway:
+    enabled: false
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 100
+        enable_lazy_load_no_trans: true
+        event:
+          merge:
+            entity_copy_observer: allow
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: ALL
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+
+nl:
+  bsoft:
+    apidemo:
+      config:
+        bestuurlijkegrenzen:
+          rest:
+            api:
+              baseurl: https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2
+              apikey: d379f340-6900-4b3c-9e10-b6a4296fdfca
+              coordinatereferencesystem: epsg:28992
+
+logging:
+  level:
+    org:
+      apache:
+        http: TRACE
+

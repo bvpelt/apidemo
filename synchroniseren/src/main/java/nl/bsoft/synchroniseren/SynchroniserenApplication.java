@@ -1,15 +1,15 @@
-package nl.bsoft.library;
+package nl.bsoft.synchroniseren;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan(basePackages = {"java.net"})
+@ComponentScan({"nl.bsoft.library"})
 @SpringBootApplication
-public class LibraryApplication {
+public class SynchroniserenApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LibraryApplication.class, args);
+        SpringApplication.run(SynchroniserenApplication.class, args);
     }
 
 }
