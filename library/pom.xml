@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>nl.bsoft</groupId>
+        <artifactId>apidemo</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+
+    <artifactId>library</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>library</name>
+    <description>library</description>
+
+    <properties>
+
+
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+            <groupId>org.openapitools</groupId>
+            <artifactId>openapi-generator-maven-plugin</artifactId>
+            <version>${openapi-plugin.version}</version>
+            <executions>
+            <execution>
+                <!-- ozon api -->
+                <id>generate-openapi-ozon-api</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <!--
+                    <inputSpec>https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2</inputSpec>
+                    -->
+                    <inputSpec>${project.basedir}/src/main/resources/bestuurlijkegrenzenV2.0.0.yaml</inputSpec>
+                    <generatorName>spring</generatorName>
+                    <library>spring-boot</library>
+                    <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                    <configOptions>
+                        <basePackage>nl.bsoft.bestuurlijkegrenzen.generated</basePackage>
+                        <apiPackage>nl.bsoft.bestuurlijkegrenzen.generated.api</apiPackage>
+                        <invokerPackage>nl.bsoft.bestuurlijkegrenzen.generated.invoker</invokerPackage>
+                        <modelPackage>nl.bsoft.bestuurlijkegrenzen.generated.model</modelPackage>
+                        <configPackage>nl.bsoft.bestuurlijkegrenzen.generated.generated.configuration</configPackage>
+                        <skipDefaultInterface>true</skipDefaultInterface>
+                        <interfaceOnly>true</interfaceOnly>
+                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                        <dateLibrary>java8</dateLibrary>
+                        <delegatePattern>true</delegatePattern>
+                        <validateSpec>true</validateSpec>
+                        <useBeanValidation>false</useBeanValidation>
+                        <useSpringBoot3>true</useSpringBoot3>
+                        <requestMappingMode>none</requestMappingMode>
+                    </configOptions>
+                    <schemaMappings>
+                        <schemaMapping>GeoJsonGeometry=org.wololo.geojson.GeoJSON</schemaMapping>
+                        <schemaMapping>Point=org.wololo.geojson.Point</schemaMapping>
+                        <schemaMapping>MultiPoint=org.wololo.geojson.MultiPoint</schemaMapping>
+                        <schemaMapping>LineString=org.wololo.geojson.LineString</schemaMapping>
+                        <schemaMapping>MultiLineString=org.wololo.geojson.MultiLineString</schemaMapping>
+                        <schemaMapping>Polygon=org.wololo.geojson.Polygon</schemaMapping>
+                        <schemaMapping>MultiPolygon=org.wololo.geojson.MultiPolygon</schemaMapping>
+                        <schemaMapping>GeometryCollection=org.wololo.geojson.GeometryCollection</schemaMapping>
+                        <schemaMapping>Health=org.springframework.boot.actuate.health.Status</schemaMapping>
+                        <schemaMapping>Info=Object</schemaMapping>
+                    </schemaMappings>
+                </configuration>
+            </execution>
+            </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <id>replace-import-javax-by-jakarta</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <basedir>
+                        ${project.build.directory}/generated-sources/openapi/src/main/java/nl/bsoft/bestuurlijkegrenzen/generated/model
+                    </basedir>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <replacements>
+                        <replacement>
+                            <token>ObjectTypeEnum objectType</token>
+                            <value>String objectType</value>
+                        </replacement>
+                        <replacement>
+                            <token>ObjectTypeEnum getObjectType</token>
+                            <value>String getObjectType</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
