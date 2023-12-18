@@ -21,7 +21,11 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+
+		<com.betadriven.version>2.4</com.betadriven.version>
 		<openapi-plugin.version>6.6.0</openapi-plugin.version>
+		<org.openapitools.nullable>0.2.6</org.openapitools.nullable>
+		<org.springdoc.version>2.3.0</org.springdoc.version>
 		<org.wololo.version>0.18.1</org.wololo.version>
 		<spring.cloud-version>2022.0.4</spring.cloud-version>
 	</properties>
@@ -73,7 +77,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.3.0</version>
+			<version>${org.springdoc.version}</version>
 		</dependency>
 
 		<dependency>
@@ -83,8 +87,6 @@
 		</dependency>
 
 		<!-- api -->
-
-
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -94,7 +96,7 @@
 		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.1</version>
+			<version>${org.openapitools.nullable}</version>
 		</dependency>
 
 		<!-- geography -->
@@ -106,7 +108,7 @@
 		<dependency>
 			<groupId>com.bedatadriven</groupId>
 			<artifactId>jackson-datatype-jts</artifactId>
-			<version>2.4</version>
+			<version>${com.betadriven.version}</version>
 		</dependency>
 
 		<!-- test -->
