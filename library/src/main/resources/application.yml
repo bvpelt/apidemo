@@ -21,7 +21,12 @@ spring:
     username: testuser
     password: 12345
   flyway:
-    enabled: false
+    enabled: true
+    url: 'jdbc:postgresql://localhost/ambtsgebied'
+    user: testuser
+    password: 12345
+    validateMigrationNaming: true
+    locations: classpath:db/migration
   jpa:
     database: postgresql
     properties:

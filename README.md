@@ -11,3 +11,6 @@ See https://mvnrepository.com/
 ```bash
 mvn versions:display-dependency-updates
 ```
+
+## Resources
+See https://mapstruct.org/
