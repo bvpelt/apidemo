@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan({"nl.bsoft.library"})
+@ComponentScan({"nl.bsoft"})
 @SpringBootApplication
 public class SynchroniserenApplication {
 

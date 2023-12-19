@@ -25,10 +25,14 @@
         <com.betadriven.version>2.4</com.betadriven.version>
         <lombok.version>1.18.30</lombok.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-project-info-reports-plugin.version>2.6</maven-project-info-reports-plugin.version>
+        <maven-site-plugin.version>3.11.0</maven-site-plugin.version>
         <net.logstash.logback.version>7.4</net.logstash.logback.version>
         <openapi-plugin.version>6.6.0</openapi-plugin.version>
         <org.apache.http.version>4.5.14</org.apache.http.version>
         <org.flywaydb.version>10.3.0</org.flywaydb.version>
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+        <org.mapstruct-binding.version>0.2.0</org.mapstruct-binding.version>
         <org.openapitools.nullable>0.2.6</org.openapitools.nullable>
         <org.springdoc.version>2.3.0</org.springdoc.version>
         <org.wololo.version>0.18.1</org.wololo.version>
@@ -37,10 +41,16 @@
 
     <modules>
         <module>library</module>
+        <module>synchroniseren</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>nl.bsoft</groupId>
+                <artifactId>library</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -52,6 +62,11 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson-bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.openapitools</groupId>
@@ -177,6 +192,30 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven-project-info-reports-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -187,7 +226,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>${org.mapstruct-binding.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>

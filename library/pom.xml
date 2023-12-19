@@ -9,14 +9,14 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-
     <artifactId>library</artifactId>
     <version>${project.parent.version}</version>
     <name>library</name>
     <description>library</description>
+    <packaging>jar</packaging>
 
     <properties>
-        <maven.deploy.skip>false</maven.deploy.skip>
+        <!-- <maven.deploy.skip>false</maven.deploy.skip> -->
     </properties>
 
     <build>
