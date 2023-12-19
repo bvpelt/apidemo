@@ -1,3 +1,51 @@
+nl:
+  bsoft:
+    apidemo:
+      config:
+        bestuurlijkegrenzen:
+          rest:
+            api:
+              baseurl: https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2
+              apikey: d379f340-6900-4b3c-9e10-b6a4296fdfca
+              coordinatereferencesystem: epsg:28992
+              maxpagesize: 50
+
+logging:
+  level:
+    org:
+      apache:
+        http: INFO
+    nl:
+      bsoft: DEBUG
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  info:
+    env:
+      enabled: true
+  server:
+    port: 8081
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      path-mapping:
+        info: app-info
+        health: app-health
+      exposure:
+        include: '*'
+        exclude:
+
+server:
+  port: 8080
+
 spring:
   application:
     name: '@project.name@'
@@ -17,7 +65,6 @@ spring:
         order_inserts: true
         order_updates: true
         batch_versioned_data: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         jdbc:
           batch_size: 100
@@ -33,21 +80,3 @@ spring:
       ddl-auto: none
     show-sql: false
     open-in-view: false
-
-nl:
-  bsoft:
-    apidemo:
-      config:
-        bestuurlijkegrenzen:
-          rest:
-            api:
-              baseurl: https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2
-              apikey: d379f340-6900-4b3c-9e10-b6a4296fdfca
-              coordinatereferencesystem: epsg:28992
-
-logging:
-  level:
-    org:
-      apache:
-        http: TRACE
-

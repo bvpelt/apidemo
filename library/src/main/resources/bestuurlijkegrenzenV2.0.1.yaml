@@ -957,138 +957,195 @@ components:
       discriminator:
         propertyName: "type"
       oneOf:
-        - $ref: "#/components/schemas/Point"
-        - $ref: "#/components/schemas/MultiPoint"
-        - $ref: "#/components/schemas/LineString"
-        - $ref: "#/components/schemas/MultiLineString"
-        - $ref: "#/components/schemas/Polygon"
-      allOf:
-        - $ref: "#/components/schemas/MultiPolygon"
-    Geometry:
-      title: "Geometry"
-      description: "GeoJSON geometry"
+        - $ref: '#/components/schemas/GeometryCollection'
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/LineString'
+        - $ref: '#/components/schemas/Polygon'
+        - $ref: '#/components/schemas/MultiPoint'
+        - $ref: '#/components/schemas/MultiLineString'
+        - $ref: '#/components/schemas/MultiPolygon'
+    GeometryCollection:
+      title: GeoJSON GeometryCollection
       required:
-        - "type"
-      type: "object"
+        - geometries
+        - type
+      type: object
       properties:
         type:
-          description: "The geometry type"
-          type: "string"
+          type: string
           enum:
-            - "Point"
-            - "MultiPoint"
-            - "LineString"
-            - "MultiLineString"
-            - "Polygon"
-            - "MultiPolygon"
-            - "Feature"
-            - "FeatureCollection"
-      externalDocs:
-        url: "https://tools.ietf.org/html/rfc7946#section-3.1"
-    Point2D:
-      title: "Point2D"
-      description: "A 2D point"
-      type: "array"
-      items:
-        type: "number"
-      maxItems: 2
-      minItems: 2
+            - GeometryCollection
+        geometries:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Point'
+              - $ref: '#/components/schemas/LineString'
+              - $ref: '#/components/schemas/Polygon'
+              - $ref: '#/components/schemas/MultiPoint'
+              - $ref: '#/components/schemas/MultiLineString'
+              - $ref: '#/components/schemas/MultiPolygon'
+    Curve:
+      $ref: '#/components/schemas/LineString'
     Point:
-      description: "GeoJSON point geometry"
-      type: "object"
-      allOf:
-        - $ref: "#/components/schemas/Geometry"
-        - required:
-            - "coordinates"
-          type: "object"
-          properties:
-            coordinates:
-              $ref: "#/components/schemas/Point2D"
-      externalDocs:
-        url: "https://tools.ietf.org/html/rfc7946#section-3.1.2"
-    MultiPoint:
-      description: "GeoJSON multi-point geometry"
-      type: "object"
-      allOf:
-        - $ref: "#/components/schemas/Geometry"
-        - required:
-            - "coordinates"
-          type: "object"
-          properties:
-            coordinates:
-              type: "array"
-              items:
-                $ref: "#/components/schemas/Point2D"
-      externalDocs:
-        url: "https://tools.ietf.org/html/rfc7946#section-3.1.3"
-    LineString:
-      description: "GeoJSON line-string geometry"
-      type: "object"
-      allOf:
-        - $ref: "#/components/schemas/Geometry"
-        - required:
-            - "coordinates"
-          type: "object"
-          properties:
-            coordinates:
-              type: "array"
-              items:
-                $ref: "#/components/schemas/Point2D"
-              minItems: 2
-      externalDocs:
-        url: "https://tools.ietf.org/html/rfc7946#section-3.1.4"
-    MultiLineString:
-      description: "GeoJSON multi-line-string geometry"
-      type: "object"
-      allOf:
-        - $ref: "#/components/schemas/Geometry"
-        - required:
-            - "coordinates"
-          type: "object"
-          properties:
-            coordinates:
-              type: "array"
-              items:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Point2D"
-      externalDocs:
-        url: "https://tools.ietf.org/html/rfc7946#section-3.1.5"
+      title: GeoJSON Point
+      required:
+        - coordinates
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - Point
+        coordinates:
+          minItems: 2
+          type: array
+          items:
+            multipleOf: 0.001
+            type: number
+        bbox:
+          minItems: 4
+          type: array
+          items:
+            multipleOf: 0.001
+            type: number
     Polygon:
-      description: "GeoJSON polygon geometry"
-      type: "object"
-      allOf:
-        - $ref: "#/components/schemas/Geometry"
-        - required:
-            - "coordinates"
-          type: "object"
-          properties:
-            coordinates:
-              type: "array"
+      title: GeoJSON Polygon
+      required:
+        - coordinates
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - Polygon
+        coordinates:
+          type: array
+          items:
+            minItems: 4
+            type: array
+            items:
+              minItems: 2
+              type: array
               items:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Point2D"
-      externalDocs:
-        url: "https://tools.ietf.org/html/rfc7946#section-3.1.6"
+                multipleOf: 0.001
+                type: number
+        bbox:
+          minItems: 4
+          type: array
+          items:
+            multipleOf: 0.001
+            type: number
     MultiPolygon:
-      description: "GeoJSON multi-polygon geometry"
-      type: "object"
-      allOf:
-        - $ref: "#/components/schemas/Geometry"
-        - required:
-            - "coordinates"
-          type: "object"
-          properties:
-            coordinates:
-              type: "array"
+      title: GeoJSON MultiPolygon
+      required:
+        - coordinates
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - MultiPolygon
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              minItems: 4
+              type: array
               items:
-                type: "array"
+                minItems: 2
+                type: array
                 items:
-                  type: "array"
-                  items:
-                    $ref: "#/components/schemas/Point2D"
-      externalDocs:
-        url: "https://tools.ietf.org/html/rfc7946#section-3.1.7"
+                  multipleOf: 0.001
+                  type: number
+        bbox:
+          minItems: 4
+          type: array
+          items:
+            multipleOf: 0.001
+            type: number
+    LineString:
+      title: GeoJSON LineString
+      required:
+        - coordinates
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - LineString
+        coordinates:
+          minItems: 2
+          type: array
+          items:
+            minItems: 2
+            type: array
+            items:
+              multipleOf: 0.001
+              type: number
+        bbox:
+          minItems: 4
+          type: array
+          items:
+            multipleOf: 0.001
+            type: number
+    MultiPoint:
+      title: GeoJSON MultiPoint
+      required:
+        - coordinates
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - MultiPoint
+        coordinates:
+          type: array
+          items:
+            minItems: 2
+            type: array
+            items:
+              multipleOf: 0.001
+              type: number
+        bbox:
+          minItems: 4
+          type: array
+          items:
+            multipleOf: 0.001
+            type: number
+    MultiLineString:
+      title: GeoJSON MultiLineString
+      required:
+        - coordinates
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - MultiLineString
+        coordinates:
+          type: array
+          items:
+            minItems: 2
+            type: array
+            items:
+              minItems: 2
+              type: array
+              items:
+                multipleOf: 0.001
+                type: number
+        bbox:
+          minItems: 4
+          type: array
+          items:
+            multipleOf: 0.001
+            type: number
 security:
   - apiKey: [ ]

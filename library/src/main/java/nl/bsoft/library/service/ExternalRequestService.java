@@ -156,6 +156,7 @@ public class ExternalRequestService {
                         });
     }
 
+
     private <T> T responseBody(
             HttpRequest httpRequest, HttpResponse<byte[]> httpResponse, Class<T> clazz) {
         if (clazz == byte[].class) {

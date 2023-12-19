@@ -24,30 +24,12 @@ public class BestuurlijkeGrenzenProcessingService {
     public int processBestuurlijkeGebieden() {
         log.info("Process all bestuurlijke gebieden");
 
-        AtomicInteger counter = new AtomicInteger();
-        bestuurlijkeGrenzenImportService.processAllBestuurlijkgebieden(
-                bestuurlijkGebieds -> {
-            counter.addAndGet(processBestuurlijkeGrenzen(bestuurlijkGebieds));
-        });
+        return bestuurlijkeGrenzenImportService.getAllBestuurlijkebebieden();
 
-        return counter.get();
     }
 
 
-    private int processBestuurlijkeGrenzen(List<BestuurlijkGebied> bestuurlijkeGebieden) {
 
-        return bestuurlijkeGebieden.size();
-    }
 
-    /*
-    private int processDocuments(List<Document> documentList) {
-        Map<String, Set<DocumentLocatie>> locationCollection =
-                locatieSynchronisatieService.getLocations(documentList);
-        List<Document> documents = getDocumentsWithGeo(documentList, locationCollection);
-        log.info("[OZON] Save {} regelingen.", documents.size());
-        documentService.saveAllDocuments(documents);
-        return documentList.size();
-    }
-    */
 
 }

@@ -7,7 +7,6 @@ import nl.bsoft.library.exception.InternalServerErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -28,7 +27,8 @@ import java.util.stream.Stream;
 @Service
 public class BestuurlijkGebiedService extends ExternalRequestService {
 
-    private static final int MAX_PAGE_SIZE = 50;
+    @Value("${nl.bsoft.apidemo.config.bestuurlijkegrenzen.rest.api.maxpagesize}")
+    private int MAX_PAGE_SIZE; // = 50;
 
     @Value("${nl.bsoft.apidemo.config.bestuurlijkegrenzen.rest.api.baseurl}")
     private String apiUrl;

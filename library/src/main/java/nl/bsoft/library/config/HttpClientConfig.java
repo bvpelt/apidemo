@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Controller;
 
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -19,10 +18,6 @@ import java.util.concurrent.Executors;
 public class HttpClientConfig {
     public static final long DEFAULT_DURATION_REQUEST_SECONDS = 20;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-    @Autowired
-    private Environment environment;
-
     private final HttpClient httpClient =
             HttpClient.newBuilder()
                     .followRedirects(HttpClient.Redirect.NEVER)
@@ -30,6 +25,8 @@ public class HttpClientConfig {
                     .connectTimeout(Duration.ofSeconds(DEFAULT_DURATION_REQUEST_SECONDS))
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
+    @Autowired
+    private Environment environment;
 
     @Bean
     public HttpClient getHttpClient() {
