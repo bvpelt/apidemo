@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -59,7 +58,7 @@ public class BestuurlijkeGrenzenImportService {
                 if (bestuurlijkeGebiedenGet200Response.getEmbedded() != null) {
                     List<BestuurlijkGebied> bestuurlijkGebiedList = bestuurlijkeGebiedenGet200Response.getEmbedded().getBestuurlijkeGebieden();
                     log.debug("Retrieved page: {}", page);
-                    if ((bestuurlijkGebiedList != null) && (bestuurlijkGebiedList.size() > 0) ) {
+                    if ((bestuurlijkGebiedList != null) && (bestuurlijkGebiedList.size() > 0)) {
                         processBestuurlijkeGrenzen(bestuurlijkGebiedList);
                     } else {
                         log.info("No results in the list");
@@ -84,7 +83,9 @@ public class BestuurlijkeGrenzenImportService {
     private int processBestuurlijkeGrenzen(List<BestuurlijkGebied> bestuurlijkeGebieden) {
 
         bestuurlijkeGebieden.stream().forEach(
-                (bestuurlijkGebied -> {procesBestuurlijkeGrens(bestuurlijkGebied);})
+                (bestuurlijkGebied -> {
+                    procesBestuurlijkeGrens(bestuurlijkGebied);
+                })
         );
 
         return bestuurlijkeGebieden.size();
@@ -93,6 +94,7 @@ public class BestuurlijkeGrenzenImportService {
     private void procesBestuurlijkeGrens(BestuurlijkGebied bestuurlijkGebied) {
         log.info("Bestuurlijke gebied - domein: {}, identificatie: {}, type: {}", bestuurlijkGebied.getDomein(), bestuurlijkGebied.getIdentificatie(), bestuurlijkGebied.getType());
     }
+
     public BestuurlijkeGebiedenGet200Response getPage(Integer page, Integer size) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(bestuurlijkGebiedService.getApiUrl() + "/bestuurlijke-gebieden");
 

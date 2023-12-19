@@ -10,7 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 
-public class OffsetDateTimeDeserializer  extends JsonDeserializer<OffsetDateTime> {
+public class OffsetDateTimeDeserializer extends JsonDeserializer<OffsetDateTime> {
 
     @Override
     public OffsetDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {

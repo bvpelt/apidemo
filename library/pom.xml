@@ -11,9 +11,10 @@
 
 
     <artifactId>library</artifactId>
-    <version>${project.parent.version}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>library</name>
     <description>library</description>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.deploy.skip>false</maven.deploy.skip>
@@ -21,10 +22,12 @@
 
     <build>
         <plugins>
+            <!--
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+-->
 
             <plugin>
                 <groupId>org.openapitools</groupId>
@@ -43,13 +46,15 @@
                             <inputSpec>https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2</inputSpec>
                             -->
                             <inputSpec>${project.basedir}/src/main/resources/bestuurlijkegrenzenV2.0.1.yaml</inputSpec>
+
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                             <configOptions>
                                 <apiPackage>nl.bsoft.bestuurlijkegrenzen.generated.api</apiPackage>
                                 <basePackage>nl.bsoft.bestuurlijkegrenzen.generated</basePackage>
-                                <configPackage>nl.bsoft.bestuurlijkegrenzen.generated.generated.configuration</configPackage>
+                                <configPackage>nl.bsoft.bestuurlijkegrenzen.generated.generated.configuration
+                                </configPackage>
                                 <invokerPackage>nl.bsoft.bestuurlijkegrenzen.generated.invoker</invokerPackage>
                                 <modelPackage>nl.bsoft.bestuurlijkegrenzen.generated.model</modelPackage>
 
@@ -89,15 +94,6 @@
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>replacer</artifactId>
                 <version>1.5.3</version>
-                <executions>
-                    <execution>
-                        <id>replace-import-javax-by-jakarta</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <basedir>
                         ${project.build.directory}/generated-sources/openapi/src/main/java/nl/bsoft/bestuurlijkegrenzen/generated/model
@@ -115,6 +111,17 @@
                             <value>String getObjectType</value>
                         </replacement>
                     </replacements>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <includes>
+                        <include>${project.build.directory}/generated-sources/openapi</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
