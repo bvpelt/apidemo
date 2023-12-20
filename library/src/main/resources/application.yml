@@ -17,12 +17,12 @@ spring:
     banner-mode: 'off'
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: 'jdbc:postgresql://localhost:5432/ambtsgebied'
+    url: jdbc:postgresql://localhost:5432/ambtsgebied
     username: testuser
     password: 12345
   flyway:
     enabled: true
-    url: 'jdbc:postgresql://localhost/ambtsgebied'
+    url: jdbc:postgresql://localhost:5432/ambtsgebied
     user: testuser
     password: 12345
     validateMigrationNaming: true
@@ -41,11 +41,13 @@ spring:
         event:
           merge:
             entity_copy_observer: allow
+#        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
       jakarta:
         persistence:
           sharedCache:
             mode: ALL
     hibernate:
       ddl-auto: none
-    show-sql: false
+    show-sql: true
     open-in-view: false
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect

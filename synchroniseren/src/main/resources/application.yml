@@ -57,7 +57,7 @@ spring:
     username: testuser
     password: 12345
   flyway:
-    enabled: false
+    enabled: true
   jpa:
     database: postgresql
     properties:
@@ -78,5 +78,6 @@ spring:
             mode: ALL
     hibernate:
       ddl-auto: none
-    show-sql: false
+    show-sql: true
     open-in-view: false
+#    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect

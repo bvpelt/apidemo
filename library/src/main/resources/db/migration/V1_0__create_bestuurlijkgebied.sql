@@ -4,10 +4,16 @@ create table bestuurlijkgebied
     identificatie varchar(48) not null,
     domein        varchar(48),
     gebiedtype    varchar(32),
+    md5hash       varchar(40) not null,
     geometrie     geometry(Geometry,28992) not null
-)
+);
 
 create index bestuurlijkgebied_identificatie_idx on bestuurlijkgebied(identificatie);
+
+create index bestuurlijkgebied_md5hash_idx on bestuurlijkgebied(md5hash);
+
+create index bestuurlijkgebied_geometry_idx
+    on bestuurlijkgebied using gist (geometrie);
 
 ALTER TABLE public.bestuurlijkgebied
     OWNER TO testuser;

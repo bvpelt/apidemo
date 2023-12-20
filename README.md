@@ -13,4 +13,6 @@ mvn versions:display-dependency-updates
 ```
 
 ## Resources
-See https://mapstruct.org/
+- mapstruct https://mapstruct.org/
+- postgres https://computingforgeeks.com/install-and-configure-postgresql-on-ubuntu/
+- postgis https://unixcop.com/how-to-install-the-postgis-extension-for-postgresql/

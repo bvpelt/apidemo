@@ -3,7 +3,11 @@ package nl.bsoft.synchroniseren.service;
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkeGebiedenGet200Response;
+import nl.bsoft.library.model.dto.BestuurlijkGebiedDto;
 import nl.bsoft.library.service.BestuurlijkGebiedService;
+import nl.bsoft.library.service.BestuurlijkeGebiedenStorageService;
+import nl.bsoft.library.service.GeoService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -19,10 +23,14 @@ public class BestuurlijkeGrenzenImportService {
 
     private static final int MAX_PAGE_SIZE = 50;
     private final BestuurlijkGebiedService bestuurlijkGebiedService;
+    private final GeoService geoService;
+    private final BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService;
 
     @Autowired
-    public BestuurlijkeGrenzenImportService(BestuurlijkGebiedService bestuurlijkGebiedService) {
+    public BestuurlijkeGrenzenImportService(BestuurlijkGebiedService bestuurlijkGebiedService, BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService, GeoService geoService) {
         this.bestuurlijkGebiedService = bestuurlijkGebiedService;
+        this.bestuurlijkeGebiedenStorageService = bestuurlijkeGebiedenStorageService;
+        this.geoService = geoService;
     }
 
     public void processAllBestuurlijkgebieden(Consumer<List<BestuurlijkGebied>> callable) {
@@ -93,6 +101,34 @@ public class BestuurlijkeGrenzenImportService {
 
     private void procesBestuurlijkeGrens(BestuurlijkGebied bestuurlijkGebied) {
         log.info("Bestuurlijke gebied - domein: {}, identificatie: {}, type: {}", bestuurlijkGebied.getDomein(), bestuurlijkGebied.getIdentificatie(), bestuurlijkGebied.getType());
+
+
+        // Check if there is already a known bestuurlijkgebied
+        List<BestuurlijkGebiedDto> bestuurlijkGebiedDtoList = bestuurlijkeGebiedenStorageService.findByIdentificatie(bestuurlijkGebied.getIdentificatie());
+        int size = bestuurlijkGebiedDtoList.size();
+        if (size == 0) { // no entries found
+            log.info("Create and store new entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
+            BestuurlijkGebiedDto bestuurlijkGebiedDto = new BestuurlijkGebiedDto();
+            bestuurlijkGebiedDto.setIdentificatie(bestuurlijkGebied.getIdentificatie());
+            bestuurlijkGebiedDto.setType(bestuurlijkGebied.getType().getValue());
+            bestuurlijkGebiedDto.setDomein(bestuurlijkGebied.getDomein());
+            bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
+            bestuurlijkGebiedDto.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
+            bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
+
+        } else {
+            if (size == 1) { // exactly 1 entrie found, update
+                log.info("Update and store entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
+                BestuurlijkGebiedDto bestuurlijkGebiedDto = bestuurlijkGebiedDtoList.get(0);
+                bestuurlijkGebiedDto.setType(bestuurlijkGebied.getType().getValue());
+                bestuurlijkGebiedDto.setDomein(bestuurlijkGebied.getDomein());
+                bestuurlijkGebiedDto.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
+                bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
+                bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
+            } else {
+                log.error("Not yet implemented");
+            }
+        }
     }
 
     public BestuurlijkeGebiedenGet200Response getPage(Integer page, Integer size) {
@@ -118,3 +154,4 @@ public class BestuurlijkeGrenzenImportService {
         return bestuurlijkGebiedService.getIgnoreFailure(uriComponentsBuilder.build().toUri(), BestuurlijkeGebiedenGet200Response.class);
     }
 }
+
