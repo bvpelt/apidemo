@@ -25,7 +25,7 @@ public class SynchroniszeController {
         this.openbareLichamenProcessingService = openbareLichamenProcessingService;
     }
 
-    @GetMapping("/bestuurlijkegebied")
+    @GetMapping("/bestuurlijkegebieden")
     public ResponseEntity startBestuurlijkgebied() {
 
         UpdateCounter counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
