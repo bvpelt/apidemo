@@ -3,6 +3,8 @@ package nl.bsoft.synchroniseren.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.synchroniseren.service.BestuurlijkeGrenzenProcessingService;
+import nl.bsoft.synchroniseren.service.OpenbareLichamenProcessingService;
+import nl.bsoft.synchroniseren.service.UpdateCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,21 +17,31 @@ public class SynchroniszeController {
 
     private BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService;
 
+    private OpenbareLichamenProcessingService openbareLichamenProcessingService;
+
     @Autowired
-    SynchroniszeController(BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService) {
+    SynchroniszeController(BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService, OpenbareLichamenProcessingService openbareLichamenProcessingService) {
         this.bestuurlijkeGrenzenProcessingService = bestuurlijkeGrenzenProcessingService;
+        this.openbareLichamenProcessingService = openbareLichamenProcessingService;
     }
 
     @GetMapping("/bestuurlijkegebied")
-    public ResponseEntity start() {
-        String message = "Ok";
+    public ResponseEntity startBestuurlijkgebied() {
 
-        log.info("Start processing");
+        UpdateCounter counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
 
-        int number = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
+        log.info("End   processing - {} elements", counter.getProcessed());
 
-        log.info("End   processing - {} elements", number);
+        return ResponseEntity.ok(counter);
+    }
 
-        return ResponseEntity.ok(message);
+    @GetMapping("/openbarelichamen")
+    public ResponseEntity startOpenbaarLichaam() {
+
+        UpdateCounter counter = openbareLichamenProcessingService.processOpenbareLichamen();
+
+        log.info("End   processing - {} elements", counter.getProcessed());
+
+        return ResponseEntity.ok(counter);
     }
 }

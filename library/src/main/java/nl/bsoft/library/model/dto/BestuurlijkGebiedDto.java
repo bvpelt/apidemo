@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.locationtech.jts.geom.Geometry;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter
@@ -31,33 +32,31 @@ public class BestuurlijkGebiedDto implements Serializable {
     private String type;
 
 
-    @Column(name= "md5hash", nullable = false)
+    @Column(name = "md5hash", nullable = false)
     private String md5hash;
 
     @Column(name = "geometrie", nullable = false, columnDefinition = "geometry(Geometry,28992)")
     private Geometry geometrie;
+
+    @Column(name = "begingeldigheid", nullable = false)
+    private LocalDate beginGeldigheid;
+
+    @Column(name = "eindgeldigheid")
+    private LocalDate eindGeldigheid;
+
+    @Column(name = "registratietijdstip")
+    private LocalDate registratieTijdstip;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BestuurlijkGebiedDto that = (BestuurlijkGebiedDto) o;
-        return identificatie.equals(that.identificatie) && domein.equals(that.domein) && Objects.equals(type, that.type) && md5hash.equals(that.md5hash) && geometrie.equals(that.geometrie);
+        return identificatie.equals(that.identificatie) && Objects.equals(domein, that.domein) && Objects.equals(type, that.type) && md5hash.equals(that.md5hash) && geometrie.equals(that.geometrie) && beginGeldigheid.equals(that.beginGeldigheid) && Objects.equals(eindGeldigheid, that.eindGeldigheid) && registratieTijdstip.equals(that.registratieTijdstip);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identificatie, domein, type, md5hash, geometrie);
-    }
-
-    @Override
-    public String toString() {
-        return "BestuurlijkGebiedDto{" +
-                "id=" + id +
-                ", identificatie='" + identificatie + '\'' +
-                ", domein='" + domein + '\'' +
-                ", type='" + type + '\'' +
-                ", md5hash='" + md5hash + '\'' +
-                '}';
+        return Objects.hash(identificatie, domein, type, md5hash, beginGeldigheid, eindGeldigheid, registratieTijdstip);
     }
 }

@@ -16,7 +16,8 @@ public interface BestuurlijkGebiedRepository extends PagingAndSortingRepository<
 
     String FIND_ALL_BESTUURLIJKGEBIED_BY_IDENTIFICATIE_QUERY = "SELECT b " +
             "FROM BestuurlijkgebiedDto b " +
-            "WHERE b.identificatie = :identificatie ";
+            "WHERE b.identificatie = :identificatie " +
+            "ORDER BY b.registratieTijdstip,  b.beginGeldigheid";
 
 
     List<BestuurlijkGebiedDto> findBestuurlijkGebiedDtoByIdentificatie(@Param("identificatie") String identificatie);

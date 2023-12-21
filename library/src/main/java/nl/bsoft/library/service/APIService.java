@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Slf4j
 @Getter
 @Service
-public class BestuurlijkGebiedService extends ExternalRequestService {
+public class APIService extends ExternalRequestService {
 
     @Value("${nl.bsoft.apidemo.config.bestuurlijkegrenzen.rest.api.maxpagesize}")
     private int MAX_PAGE_SIZE; // = 50;
@@ -40,7 +40,7 @@ public class BestuurlijkGebiedService extends ExternalRequestService {
     private String coordinateReferenceSystem;
 
     @Autowired
-    public BestuurlijkGebiedService(ObjectMapper objectMapper, HttpClient httpClient, Duration requestDuration) {
+    public APIService(ObjectMapper objectMapper, HttpClient httpClient, Duration requestDuration) {
         super(objectMapper, httpClient, requestDuration);
         log.info("Started BestuurlijkGebiedService with apiUrl: {}, apkKey: {}, CRS: {}", apiUrl, apiKey, coordinateReferenceSystem);
     }

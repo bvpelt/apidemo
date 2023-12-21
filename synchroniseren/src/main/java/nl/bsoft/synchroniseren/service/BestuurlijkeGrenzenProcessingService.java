@@ -17,12 +17,10 @@ public class BestuurlijkeGrenzenProcessingService {
         this.bestuurlijkeGrenzenImportService = bestuurlijkeGrenzenImportService;
     }
 
-    public int processBestuurlijkeGebieden() {
+    public UpdateCounter processBestuurlijkeGebieden() {
         log.info("Process all bestuurlijke gebieden");
 
         return bestuurlijkeGrenzenImportService.getAllBestuurlijkebebieden();
-
     }
-
 
 }

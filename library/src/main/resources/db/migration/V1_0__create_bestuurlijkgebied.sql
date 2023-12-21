@@ -1,6 +1,6 @@
 create table bestuurlijkgebied
 (
-    id            bigint       not null primary key,
+    id            bigint      not null primary key,
     identificatie varchar(48) not null,
     domein        varchar(48),
     gebiedtype    varchar(32),
@@ -8,9 +8,9 @@ create table bestuurlijkgebied
     geometrie     geometry(Geometry,28992) not null
 );
 
-create index bestuurlijkgebied_identificatie_idx on bestuurlijkgebied(identificatie);
+create index bestuurlijkgebied_identificatie_idx on bestuurlijkgebied (identificatie);
 
-create index bestuurlijkgebied_md5hash_idx on bestuurlijkgebied(md5hash);
+create index bestuurlijkgebied_md5hash_idx on bestuurlijkgebied (md5hash);
 
 create index bestuurlijkgebied_geometry_idx
     on bestuurlijkgebied using gist (geometrie);

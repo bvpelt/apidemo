@@ -19,11 +19,11 @@ public class BestuurlijkeGebiedenStorageService {
         this.bestuurlijkGebiedRepository = bestuurlijkGebiedRepository;
     }
 
-    public BestuurlijkGebiedDto Save (BestuurlijkGebiedDto bestuurlijkGebiedDto) {
+    public BestuurlijkGebiedDto Save(BestuurlijkGebiedDto bestuurlijkGebiedDto) {
         log.debug("Saving {}", bestuurlijkGebiedDto.toString());
-      BestuurlijkGebiedDto savedBestuurlijkGebiedDto = bestuurlijkGebiedRepository.save(bestuurlijkGebiedDto);
+        BestuurlijkGebiedDto savedBestuurlijkGebiedDto = bestuurlijkGebiedRepository.save(bestuurlijkGebiedDto);
 
-      return savedBestuurlijkGebiedDto;
+        return savedBestuurlijkGebiedDto;
     }
 
     public List<BestuurlijkGebiedDto> findByIdentificatie(String identificatie) {

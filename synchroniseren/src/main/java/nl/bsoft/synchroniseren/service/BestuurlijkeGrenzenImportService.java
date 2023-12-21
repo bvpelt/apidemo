@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkeGebiedenGet200Response;
 import nl.bsoft.library.model.dto.BestuurlijkGebiedDto;
-import nl.bsoft.library.service.BestuurlijkGebiedService;
+import nl.bsoft.library.service.APIService;
 import nl.bsoft.library.service.BestuurlijkeGebiedenStorageService;
 import nl.bsoft.library.service.GeoService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 
 @Slf4j
@@ -22,52 +21,31 @@ import java.util.function.Consumer;
 public class BestuurlijkeGrenzenImportService {
 
     private static final int MAX_PAGE_SIZE = 50;
-    private final BestuurlijkGebiedService bestuurlijkGebiedService;
+    private final APIService APIService;
     private final GeoService geoService;
     private final BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService;
 
+
     @Autowired
-    public BestuurlijkeGrenzenImportService(BestuurlijkGebiedService bestuurlijkGebiedService, BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService, GeoService geoService) {
-        this.bestuurlijkGebiedService = bestuurlijkGebiedService;
+    public BestuurlijkeGrenzenImportService(APIService APIService, BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService, GeoService geoService) {
+        this.APIService = APIService;
         this.bestuurlijkeGebiedenStorageService = bestuurlijkeGebiedenStorageService;
         this.geoService = geoService;
+
     }
 
-    public void processAllBestuurlijkgebieden(Consumer<List<BestuurlijkGebied>> callable) {
-        log.info("Start import bestuurlijkegebieden");
-
-
-        bestuurlijkGebiedService.processAllItemsFromCompletableFuture(
-                (pageIndex, size) -> getBestuurlijkegebieden(pageIndex + 1, size)
-                        .thenApply(
-                                bestuurlijkeGrenzenGet200Response -> {
-                                    if (bestuurlijkeGrenzenGet200Response != null) {
-                                        log.info("Response exists, size: {} ", bestuurlijkeGrenzenGet200Response.getEmbedded().getBestuurlijkeGebieden().size());
-                                        callable.accept(bestuurlijkeGrenzenGet200Response.getEmbedded().getBestuurlijkeGebieden());
-                                    }
-                                    return bestuurlijkeGrenzenGet200Response;
-                                }),
-                bestuurlijkgebied -> {
-                    int index = 1;
-                    if (bestuurlijkgebied != null && bestuurlijkgebied.getLinks().getNext() == null) {
-                        return 0;
-                    }
-                    return 1;
-                });
-    }
-
-
-    public int getAllBestuurlijkebebieden() {
+    public UpdateCounter getAllBestuurlijkebebieden() {
         int page = 1;
+        UpdateCounter counter = new UpdateCounter();
         boolean morePages = true;
         while (morePages) {
-            BestuurlijkeGebiedenGet200Response bestuurlijkeGebiedenGet200Response = getPage(page, MAX_PAGE_SIZE);
+            BestuurlijkeGebiedenGet200Response bestuurlijkeGebiedenGet200Response = getBestuurlijkGebiedPage(page, MAX_PAGE_SIZE);
             if (bestuurlijkeGebiedenGet200Response != null) {
                 if (bestuurlijkeGebiedenGet200Response.getEmbedded() != null) {
                     List<BestuurlijkGebied> bestuurlijkGebiedList = bestuurlijkeGebiedenGet200Response.getEmbedded().getBestuurlijkeGebieden();
                     log.debug("Retrieved page: {}", page);
                     if ((bestuurlijkGebiedList != null) && (bestuurlijkGebiedList.size() > 0)) {
-                        processBestuurlijkeGrenzen(bestuurlijkGebiedList);
+                        processBestuurlijkeGrenzen(counter, bestuurlijkGebiedList);
                     } else {
                         log.info("No results in the list");
                     }
@@ -85,21 +63,72 @@ public class BestuurlijkeGrenzenImportService {
                 morePages = false;
             }
         }
-        return page;
+        return counter;
     }
 
-    private int processBestuurlijkeGrenzen(List<BestuurlijkGebied> bestuurlijkeGebieden) {
+    private int processBestuurlijkeGrenzen(UpdateCounter counter, List<BestuurlijkGebied> bestuurlijkeGebieden) {
 
         bestuurlijkeGebieden.stream().forEach(
                 (bestuurlijkGebied -> {
-                    procesBestuurlijkeGrens(bestuurlijkGebied);
+                    procesBestuurlijkeGrens(counter, bestuurlijkGebied);
                 })
         );
 
         return bestuurlijkeGebieden.size();
     }
 
-    private void procesBestuurlijkeGrens(BestuurlijkGebied bestuurlijkGebied) {
+    private boolean compairBestuurlijkgebied(BestuurlijkGebied bestuurlijkGebied, BestuurlijkGebiedDto bestuurlijkGebiedDto) {
+        boolean equal = true;
+
+        equal = bestuurlijkGebied.getIdentificatie().equals(bestuurlijkGebiedDto.getIdentificatie());
+        if (equal) {
+            equal = bestuurlijkGebied.getType().getValue().equals(bestuurlijkGebiedDto.getType());
+        } else {
+            log.debug("identificatie gewijzigd api: {} database: {}", bestuurlijkGebied.getIdentificatie(), bestuurlijkGebiedDto.getIdentificatie());
+            return equal;
+        }
+
+        if (equal) {
+            equal = bestuurlijkGebied.getDomein().equals(bestuurlijkGebiedDto.getDomein());
+        } else {
+            log.debug("type gewijzigd api: {} database: {}", bestuurlijkGebied.getType(), bestuurlijkGebiedDto.getType());
+            return equal;
+        }
+
+        if (equal) {
+            equal = bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get().equals(bestuurlijkGebiedDto.getBeginGeldigheid());
+        } else {
+            log.debug("domein gewijzigd api: {} database: {}", bestuurlijkGebied.getDomein(), bestuurlijkGebiedDto.getDomein());
+            return equal;
+        }
+
+        if (equal) {
+            if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
+                equal = bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get().equals(bestuurlijkGebiedDto.getEindGeldigheid());
+            }
+        } else {
+            log.debug("beginGeldigheid gewijzigd api: {} database: {}", bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get(), bestuurlijkGebiedDto.getBeginGeldigheid());
+            return equal;
+        }
+
+        if (equal) {
+            equal = DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()).equals(bestuurlijkGebiedDto.getMd5hash());
+        } else {
+            if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
+                log.debug("eindGeldigheid gewijzigd api: {} database: {}", bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get(), bestuurlijkGebiedDto.getEindGeldigheid());
+            }
+            return equal;
+        }
+
+        if (!equal) {
+            log.debug("geometrie md5hash and content gewijzigd api: {} database: {}", DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()), bestuurlijkGebiedDto.getMd5hash());
+        }
+
+        return equal;
+    }
+
+
+    private void procesBestuurlijkeGrens(UpdateCounter counter, BestuurlijkGebied bestuurlijkGebied) {
         log.info("Bestuurlijke gebied - domein: {}, identificatie: {}, type: {}", bestuurlijkGebied.getDomein(), bestuurlijkGebied.getIdentificatie(), bestuurlijkGebied.getType());
 
 
@@ -113,45 +142,49 @@ public class BestuurlijkeGrenzenImportService {
             bestuurlijkGebiedDto.setType(bestuurlijkGebied.getType().getValue());
             bestuurlijkGebiedDto.setDomein(bestuurlijkGebied.getDomein());
             bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
+            bestuurlijkGebiedDto.setBeginGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get());
+            bestuurlijkGebiedDto.setRegistratieTijdstip(LocalDate.now());
+            if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
+                bestuurlijkGebiedDto.setEindGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get());
+            }
             bestuurlijkGebiedDto.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
             bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
-
+            counter.add();
         } else {
             if (size == 1) { // exactly 1 entrie found, update
-                log.info("Update and store entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
-                BestuurlijkGebiedDto bestuurlijkGebiedDto = bestuurlijkGebiedDtoList.get(0);
-                bestuurlijkGebiedDto.setType(bestuurlijkGebied.getType().getValue());
-                bestuurlijkGebiedDto.setDomein(bestuurlijkGebied.getDomein());
-                bestuurlijkGebiedDto.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
-                bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
-                bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
+
+                if (!compairBestuurlijkgebied(bestuurlijkGebied, bestuurlijkGebiedDtoList.get(0))) {
+                    log.info("Update and store entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
+                    BestuurlijkGebiedDto bestuurlijkGebiedDto = bestuurlijkGebiedDtoList.get(0);
+                    bestuurlijkGebiedDto.setType(bestuurlijkGebied.getType().getValue());
+                    bestuurlijkGebiedDto.setDomein(bestuurlijkGebied.getDomein());
+                    bestuurlijkGebiedDto.setBeginGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get());
+                    bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
+                    if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
+                        bestuurlijkGebiedDto.setEindGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get());
+                    }
+                    bestuurlijkGebiedDto.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
+                    bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
+                    counter.updated();
+                } else {
+                    log.info("Identical entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
+                    counter.unmodified();
+                }
             } else {
                 log.error("Not yet implemented");
+                counter.skipped();
             }
         }
     }
 
-    public BestuurlijkeGebiedenGet200Response getPage(Integer page, Integer size) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(bestuurlijkGebiedService.getApiUrl() + "/bestuurlijke-gebieden");
+    public BestuurlijkeGebiedenGet200Response getBestuurlijkGebiedPage(Integer page, Integer size) {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(APIService.getApiUrl() + "/bestuurlijke-gebieden");
 
-        //uriComponentsBuilder.queryParam("sort", "tijdslijnen.beschikbaarVanaf");
         uriComponentsBuilder.queryParam("type", "territoriaal");
         uriComponentsBuilder.queryParam("page", page);
         uriComponentsBuilder.queryParam("pageSize", size);
         log.debug("using url: {}", uriComponentsBuilder.build().toUri());
-        return bestuurlijkGebiedService.getDirectly(uriComponentsBuilder.build().toUri(), BestuurlijkeGebiedenGet200Response.class);
-    }
-
-    public CompletableFuture<BestuurlijkeGebiedenGet200Response> getBestuurlijkegebieden(Integer page, Integer size) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(bestuurlijkGebiedService.getApiUrl() + "/bestuurlijke-gebieden");
-
-        //uriComponentsBuilder.queryParam("sort", "tijdslijnen.beschikbaarVanaf");
-        uriComponentsBuilder.queryParam("type", "territoriaal");
-        uriComponentsBuilder.queryParam("page", page);
-        uriComponentsBuilder.queryParam("pageSize", size);
-        log.debug("using url: {}", uriComponentsBuilder.build().toUri());
-//        uriComponentsBuilder.queryParam("gemuteerdSinds", gemuteerdSinds);
-        return bestuurlijkGebiedService.getIgnoreFailure(uriComponentsBuilder.build().toUri(), BestuurlijkeGebiedenGet200Response.class);
+        return APIService.getDirectly(uriComponentsBuilder.build().toUri(), BestuurlijkeGebiedenGet200Response.class);
     }
 }
 

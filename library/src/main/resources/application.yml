@@ -41,7 +41,7 @@ spring:
         event:
           merge:
             entity_copy_observer: allow
-#        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+      #        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
       jakarta:
         persistence:
           sharedCache:
@@ -50,4 +50,4 @@ spring:
       ddl-auto: none
     show-sql: true
     open-in-view: false
-    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
+#    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
