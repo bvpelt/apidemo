@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -19,7 +20,7 @@ public class OpenbareLichamenImportService {
 
     private static final int MAX_PAGE_SIZE = 50;
     private final OpenbaarLichaamStorageService openbaarLichaamStorageService;
-    private APIService APIService;
+    private final APIService APIService;
 
     @Autowired
     public OpenbareLichamenImportService(APIService APIService, OpenbaarLichaamStorageService openbaarLichaamStorageService) {
@@ -76,8 +77,26 @@ public class OpenbareLichamenImportService {
                     processOpenbareLichaam(counter, openbaarLichaam);
                 })
         );
-
         return openbareLichamen.size();
+    }
+
+    private OpenbaarLichaamDto toDto(OpenbaarLichaam openbaarLichaam) {
+        OpenbaarLichaamDto bestemming = new OpenbaarLichaamDto();
+        bestemming.setCode(openbaarLichaam.getCode().get());
+        if (openbaarLichaam.getOin().isPresent()) {
+            bestemming.setOin(openbaarLichaam.getOin().get());
+        }
+        bestemming.setType(openbaarLichaam.getType().getValue());
+        bestemming.setNaam(openbaarLichaam.getNaam());
+        bestemming.setBestuurslaag(openbaarLichaam.getBestuurslaag().getValue());
+        return bestemming;
+    }
+
+    private OpenbaarLichaamDto CopyToDto(OpenbaarLichaamDto bron, LocalDateTime registratieMoment) {
+        OpenbaarLichaamDto bestemming = new OpenbaarLichaamDto();
+
+
+        return bestemming;
     }
 
     private void processOpenbareLichaam(UpdateCounter counter, OpenbaarLichaam openbaarLichaam) {
@@ -94,14 +113,9 @@ public class OpenbareLichamenImportService {
         int size = openbaarLichaamDtoList.size();
         if (size == 0) { // no entries found
             log.info("Create and store new entry for code: {}", openbaarLichaam.getCode().get());
-            OpenbaarLichaamDto openbaarLichaamDto = new OpenbaarLichaamDto();
-            openbaarLichaamDto.setCode(openbaarLichaam.getCode().get());
-            if (openbaarLichaam.getOin().isPresent()) {
-                openbaarLichaamDto.setOin(openbaarLichaam.getOin().get());
-            }
-            openbaarLichaamDto.setType(openbaarLichaam.getType().getValue());
-            openbaarLichaamDto.setNaam(openbaarLichaam.getNaam());
-            openbaarLichaamDto.setBestuurslaag(openbaarLichaam.getBestuurslaag().getValue());
+            OpenbaarLichaamDto openbaarLichaamDto = toDto(openbaarLichaam);
+            LocalDateTime registrationMoment = LocalDateTime.now();
+            openbaarLichaamDto.setBeginRegistratie(registrationMoment);
 
             openbaarLichaamStorageService.Save(openbaarLichaamDto);
             counter.add();
@@ -110,16 +124,18 @@ public class OpenbareLichamenImportService {
 
                 if (!compairOpenbaarLichaam(openbaarLichaam, openbaarLichaamDtoList.get(0))) {
                     log.info("Update and store entry for code: {}", openbaarLichaam.getCode().get());
-                    OpenbaarLichaamDto openbaarLichaamDto = openbaarLichaamDtoList.get(0);
 
-                    if (openbaarLichaam.getOin().isPresent()) {
-                        openbaarLichaamDto.setOin(openbaarLichaam.getOin().get());
-                    }
-                    openbaarLichaamDto.setType(openbaarLichaam.getType().getValue());
-                    openbaarLichaamDto.setNaam(openbaarLichaam.getNaam());
-                    openbaarLichaamDto.setBestuurslaag(openbaarLichaam.getBestuurslaag().getValue());
+                    LocalDateTime registrationMoment = LocalDateTime.now();
 
-                    openbaarLichaamStorageService.Save(openbaarLichaamDto);
+                    OpenbaarLichaamDto currentDto = openbaarLichaamDtoList.get(0);
+                    OpenbaarLichaamDto copyDto = CopyToDto(currentDto, registrationMoment);
+                    OpenbaarLichaamDto lastDto = toDto(openbaarLichaam);
+
+                    // update current eindregistratie
+                    currentDto.setEindRegistratie(registrationMoment);
+                    lastDto.setBeginRegistratie(registrationMoment);
+                    // save historie
+                    openbaarLichaamStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
                     counter.updated();
                 } else {
                     log.info("Identical entry for code: {}", openbaarLichaam.getCode().get());
@@ -131,7 +147,6 @@ public class OpenbareLichamenImportService {
             }
         }
     }
-
 
     private boolean compairOpenbaarLichaam(OpenbaarLichaam openbaarLichaam, OpenbaarLichaamDto openbaarLichaamDto) {
         boolean equal = true;

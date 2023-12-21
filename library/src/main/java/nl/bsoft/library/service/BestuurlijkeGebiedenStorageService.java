@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class BestuurlijkeGebiedenStorageService {
 
-    private BestuurlijkGebiedRepository bestuurlijkGebiedRepository;
+    private final BestuurlijkGebiedRepository bestuurlijkGebiedRepository;
 
     @Autowired
     public BestuurlijkeGebiedenStorageService(BestuurlijkGebiedRepository bestuurlijkGebiedRepository) {
@@ -24,6 +24,15 @@ public class BestuurlijkeGebiedenStorageService {
         BestuurlijkGebiedDto savedBestuurlijkGebiedDto = bestuurlijkGebiedRepository.save(bestuurlijkGebiedDto);
 
         return savedBestuurlijkGebiedDto;
+    }
+
+    public BestuurlijkGebiedDto SaveWithHistory(BestuurlijkGebiedDto original, BestuurlijkGebiedDto copy, BestuurlijkGebiedDto last) {
+        log.debug("Saving with history original: {}\n copy: {}\n, last: {}", original.toString(), copy.toString(), last.toString());
+        BestuurlijkGebiedDto savedOriginalDto = bestuurlijkGebiedRepository.save(original);
+        BestuurlijkGebiedDto savedCopyDto = bestuurlijkGebiedRepository.save(copy);
+        BestuurlijkGebiedDto savedLastDto = bestuurlijkGebiedRepository.save(last);
+
+        return savedLastDto;
     }
 
     public List<BestuurlijkGebiedDto> findByIdentificatie(String identificatie) {

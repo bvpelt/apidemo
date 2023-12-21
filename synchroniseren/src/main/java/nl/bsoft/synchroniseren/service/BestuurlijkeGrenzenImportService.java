@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -25,13 +25,11 @@ public class BestuurlijkeGrenzenImportService {
     private final GeoService geoService;
     private final BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService;
 
-
     @Autowired
     public BestuurlijkeGrenzenImportService(APIService APIService, BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService, GeoService geoService) {
         this.APIService = APIService;
         this.bestuurlijkeGebiedenStorageService = bestuurlijkeGebiedenStorageService;
         this.geoService = geoService;
-
     }
 
     public UpdateCounter getAllBestuurlijkebebieden() {
@@ -73,7 +71,6 @@ public class BestuurlijkeGrenzenImportService {
                     procesBestuurlijkeGrens(counter, bestuurlijkGebied);
                 })
         );
-
         return bestuurlijkeGebieden.size();
     }
 
@@ -127,44 +124,66 @@ public class BestuurlijkeGrenzenImportService {
         return equal;
     }
 
+    private BestuurlijkGebiedDto toDto(BestuurlijkGebied bestuurlijkGebied) {
+        BestuurlijkGebiedDto bestemming = new BestuurlijkGebiedDto();
+        bestemming.setIdentificatie(bestuurlijkGebied.getIdentificatie());
+        bestemming.setDomein(bestuurlijkGebied.getDomein());
+        bestemming.setType(bestuurlijkGebied.getType().getValue());
+        bestemming.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
+        bestemming.setBeginGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get());
+        bestemming.setBeginRegistratie(LocalDateTime.now());
+        if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
+            bestemming.setEindGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get());
+        }
+        bestemming.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
+
+        return bestemming;
+    }
+
+    private BestuurlijkGebiedDto CopyToDto(BestuurlijkGebiedDto bron, LocalDateTime registratieMoment) {
+        BestuurlijkGebiedDto bestemming = new BestuurlijkGebiedDto();
+        bestemming.setIdentificatie(bron.getIdentificatie());
+        bestemming.setDomein(bron.getDomein());
+        bestemming.setType(bron.getType());
+        bestemming.setMd5hash(bron.getMd5hash());
+        bestemming.setBeginGeldigheid(bron.getBeginGeldigheid());
+        bestemming.setEindGeldigheid(bron.getEindGeldigheid());
+        bestemming.setGeometrie(bron.getGeometrie());
+        bestemming.setBeginRegistratie(registratieMoment);
+
+        return bestemming;
+    }
 
     private void procesBestuurlijkeGrens(UpdateCounter counter, BestuurlijkGebied bestuurlijkGebied) {
         log.info("Bestuurlijke gebied - domein: {}, identificatie: {}, type: {}", bestuurlijkGebied.getDomein(), bestuurlijkGebied.getIdentificatie(), bestuurlijkGebied.getType());
-
 
         // Check if there is already a known bestuurlijkgebied
         List<BestuurlijkGebiedDto> bestuurlijkGebiedDtoList = bestuurlijkeGebiedenStorageService.findByIdentificatie(bestuurlijkGebied.getIdentificatie());
         int size = bestuurlijkGebiedDtoList.size();
         if (size == 0) { // no entries found
             log.info("Create and store new entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
-            BestuurlijkGebiedDto bestuurlijkGebiedDto = new BestuurlijkGebiedDto();
-            bestuurlijkGebiedDto.setIdentificatie(bestuurlijkGebied.getIdentificatie());
-            bestuurlijkGebiedDto.setType(bestuurlijkGebied.getType().getValue());
-            bestuurlijkGebiedDto.setDomein(bestuurlijkGebied.getDomein());
-            bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
-            bestuurlijkGebiedDto.setBeginGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get());
-            bestuurlijkGebiedDto.setRegistratieTijdstip(LocalDate.now());
-            if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
-                bestuurlijkGebiedDto.setEindGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get());
-            }
-            bestuurlijkGebiedDto.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
+
+            BestuurlijkGebiedDto bestuurlijkGebiedDto = toDto(bestuurlijkGebied);
+
             bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
             counter.add();
         } else {
             if (size == 1) { // exactly 1 entrie found, update
-
                 if (!compairBestuurlijkgebied(bestuurlijkGebied, bestuurlijkGebiedDtoList.get(0))) {
                     log.info("Update and store entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
-                    BestuurlijkGebiedDto bestuurlijkGebiedDto = bestuurlijkGebiedDtoList.get(0);
-                    bestuurlijkGebiedDto.setType(bestuurlijkGebied.getType().getValue());
-                    bestuurlijkGebiedDto.setDomein(bestuurlijkGebied.getDomein());
-                    bestuurlijkGebiedDto.setBeginGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get());
-                    bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
-                    if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
-                        bestuurlijkGebiedDto.setEindGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get());
-                    }
-                    bestuurlijkGebiedDto.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
-                    bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
+
+                    LocalDateTime registrationMoment = LocalDateTime.now();
+
+                    BestuurlijkGebiedDto currentDto = bestuurlijkGebiedDtoList.get(0);
+                    BestuurlijkGebiedDto copyDto = CopyToDto(currentDto, registrationMoment);
+                    BestuurlijkGebiedDto lastDto = toDto(bestuurlijkGebied);
+
+                    // update current eindregistratie
+                    currentDto.setEindRegistratie(registrationMoment);
+                    lastDto.setBeginRegistratie(registrationMoment);
+                    // save historie
+                    bestuurlijkeGebiedenStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
+
                     counter.updated();
                 } else {
                     log.info("Identical entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());

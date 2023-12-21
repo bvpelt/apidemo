@@ -16,15 +16,8 @@ mvn versions:display-dependency-updates
 
 ```sql
 -- retrieve all bestuurlijkgebied
-select id,
-       identificatie,
-       domein,
-       gebiedtype,
-       md5hash,
-       begingeldigheid,
-       eindgeldigheid,
-       registratietijdstip
-from bestuurlijkgebied;
+select identificatie, domein, gebiedtype, md5hash, begingeldigheid, eindgeldigheid, beginregistratie, eindregistratie 
+from bestuurlijkgebied
 
 -- retrieve area from each bestuurlijkgebied
 select identificatie, Round(ST_Area(geometrie)) area

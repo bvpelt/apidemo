@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class OpenbaarLichaamStorageService {
 
-    private OpenbaarLichaamRepository openbaarLichaamRepository;
+    private final OpenbaarLichaamRepository openbaarLichaamRepository;
 
     @Autowired
     public OpenbaarLichaamStorageService(OpenbaarLichaamRepository openbaarLichaamRepository) {
@@ -24,6 +24,15 @@ public class OpenbaarLichaamStorageService {
         OpenbaarLichaamDto savedOpenbaarLichaamDto = openbaarLichaamRepository.save(openbaarLichaamDto);
 
         return savedOpenbaarLichaamDto;
+    }
+
+    public OpenbaarLichaamDto SaveWithHistory(OpenbaarLichaamDto original, OpenbaarLichaamDto copy, OpenbaarLichaamDto last) {
+        log.debug("Saving with history original: {}\n copy: {}\n, last: {}", original.toString(), copy.toString(), last.toString());
+        OpenbaarLichaamDto savedOriginalDto = openbaarLichaamRepository.save(original);
+        OpenbaarLichaamDto savedCopyDto = openbaarLichaamRepository.save(copy);
+        OpenbaarLichaamDto savedLastDto = openbaarLichaamRepository.save(last);
+
+        return savedLastDto;
     }
 
     public List<OpenbaarLichaamDto> findByIdentificatie(String code) {

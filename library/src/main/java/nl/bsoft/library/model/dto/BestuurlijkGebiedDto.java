@@ -8,6 +8,7 @@ import org.locationtech.jts.geom.Geometry;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -44,19 +45,37 @@ public class BestuurlijkGebiedDto implements Serializable {
     @Column(name = "eindgeldigheid")
     private LocalDate eindGeldigheid;
 
-    @Column(name = "registratietijdstip")
-    private LocalDate registratieTijdstip;
+    @Column(name = "beginregistratie")
+    private LocalDateTime beginRegistratie;
+
+    @Column(name = "eindregistratie")
+    private LocalDateTime eindRegistratie;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BestuurlijkGebiedDto that = (BestuurlijkGebiedDto) o;
-        return identificatie.equals(that.identificatie) && Objects.equals(domein, that.domein) && Objects.equals(type, that.type) && md5hash.equals(that.md5hash) && geometrie.equals(that.geometrie) && beginGeldigheid.equals(that.beginGeldigheid) && Objects.equals(eindGeldigheid, that.eindGeldigheid) && registratieTijdstip.equals(that.registratieTijdstip);
+        return identificatie.equals(that.identificatie) && Objects.equals(domein, that.domein) && Objects.equals(type, that.type) && md5hash.equals(that.md5hash) && beginGeldigheid.equals(that.beginGeldigheid) && Objects.equals(eindGeldigheid, that.eindGeldigheid) && beginRegistratie.equals(that.beginRegistratie) && Objects.equals(eindRegistratie, that.eindRegistratie);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identificatie, domein, type, md5hash, beginGeldigheid, eindGeldigheid, registratieTijdstip);
+        return Objects.hash(identificatie, domein, type, md5hash, beginGeldigheid, eindGeldigheid, beginRegistratie, eindRegistratie);
+    }
+
+    @Override
+    public String toString() {
+        return "BestuurlijkGebiedDto{" +
+                "id=" + id +
+                ", identificatie='" + identificatie + '\'' +
+                ", domein='" + domein + '\'' +
+                ", type='" + type + '\'' +
+                ", md5hash='" + md5hash + '\'' +
+                ", beginGeldigheid=" + beginGeldigheid +
+                ", eindGeldigheid=" + eindGeldigheid +
+                ", beginRegistratie=" + beginRegistratie +
+                ", eindRegistratie=" + eindRegistratie +
+                '}';
     }
 }

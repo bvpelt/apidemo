@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -34,17 +35,23 @@ public class OpenbaarLichaamDto implements Serializable {
     @Column(name = "bestuurslaag", length = 32)
     private String bestuurslaag;
 
+    @Column(name = "beginregistratie")
+    private LocalDateTime beginRegistratie;
+
+    @Column(name = "eindregistratie")
+    private LocalDateTime eindRegistratie;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OpenbaarLichaamDto that = (OpenbaarLichaamDto) o;
-        return code.equals(that.code) && Objects.equals(oin, that.oin) && type.equals(that.type) && Objects.equals(naam, that.naam) && Objects.equals(bestuurslaag, that.bestuurslaag);
+        return code.equals(that.code) && Objects.equals(oin, that.oin) && type.equals(that.type) && Objects.equals(naam, that.naam) && Objects.equals(bestuurslaag, that.bestuurslaag) && beginRegistratie.equals(that.beginRegistratie) && Objects.equals(eindRegistratie, that.eindRegistratie);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, oin, type, naam, bestuurslaag);
+        return Objects.hash(code, oin, type, naam, bestuurslaag, beginRegistratie, eindRegistratie);
     }
 
     @Override
@@ -56,6 +63,8 @@ public class OpenbaarLichaamDto implements Serializable {
                 ", type='" + type + '\'' +
                 ", naam='" + naam + '\'' +
                 ", bestuurslaag='" + bestuurslaag + '\'' +
+                ", beginRegistratie=" + beginRegistratie +
+                ", eindRegistratie=" + eindRegistratie +
                 '}';
     }
 }

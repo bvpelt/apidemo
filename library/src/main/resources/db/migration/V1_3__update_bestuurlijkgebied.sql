@@ -1,7 +1,8 @@
 alter table bestuurlijkgebied
     add begingeldigheid date not null,
     add eindgeldigheid date,
-    add registratietijdstip timestamp default now() not null;
+    add beginRegistratie timestamp default now() not null,
+    add eindRegistratie timestamp;
 
 create index bestuurlijkgebied_begingeldigheid_idx on bestuurlijkgebied (begingeldigheid);
 
