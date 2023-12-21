@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 
 public class OffsetDateTimeDeserializer extends JsonDeserializer<OffsetDateTime> {
-
     @Override
     public OffsetDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         OffsetDateTime offsetDateTime = null;

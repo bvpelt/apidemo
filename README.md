@@ -16,7 +16,14 @@ mvn versions:display-dependency-updates
 
 ```sql
 -- retrieve all bestuurlijkgebied
-select identificatie, domein, gebiedtype, md5hash, begingeldigheid, eindgeldigheid, beginregistratie, eindregistratie 
+select identificatie,
+       domein,
+       gebiedtype,
+       md5hash,
+       begingeldigheid,
+       eindgeldigheid,
+       beginregistratie,
+       eindregistratie
 from bestuurlijkgebied
 
 -- retrieve area from each bestuurlijkgebied

@@ -33,13 +33,6 @@ public class JacksonConfig {
         return mapper;
     }
 
-    /*
-    public static ObjectMapper getObjectMapper() {
-        return new JacksonConfig().objectMapper();
-    }
-     */
-
-
     private JavaTimeModule getTimeModule() {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addDeserializer(OffsetDateTime.class, new OffsetDateTimeDeserializer());
