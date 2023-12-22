@@ -13,10 +13,13 @@ mvn versions:display-dependency-updates
 ```
 
 ## Releases
+
 Assuming there is a main branch the following steps are made:
+
 - create a develop branch (from the main branch), this is used for all developers
 
 For each feature (based on develop branch)
+
 - git checkout -b <feature>
 - ... do some work and **test**
 - git add . # from feature branch
@@ -35,6 +38,10 @@ For each feature (based on develop branch)
 - git tag -a <version> -m "<feature>" main
 - git push --tags
 
+## API
+
+- get a page of bestuurlijkgebieden: http://localhost:8080/api/bestuurlijkegebieden?pageNumber=5
+- get a single bestuurlijkgebied: http://localhost:8080/api/bestuurlijkegebieden/GM0221
 
 ## Usefull queries
 
