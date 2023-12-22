@@ -47,6 +47,7 @@ For each feature (based on develop branch)
 
 ```sql
 -- retrieve all bestuurlijkgebied
+
 select identificatie,
        domein,
        gebiedtype,
@@ -58,11 +59,13 @@ select identificatie,
 from bestuurlijkgebied
 
 -- retrieve area from each bestuurlijkgebied
+
 select identificatie, Round(ST_Area(geometrie)) area
 from bestuurlijkgebied
 order by area;
 
 -- find openbaarlichaam without bestuurlijk gebied
+
 select o.code
 from openbaarlichaam o
          left join bestuurlijkgebied b on (o.code = b.identificatie)
