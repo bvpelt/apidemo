@@ -18,6 +18,5 @@ public interface OpenbaarLichaamRepository extends PagingAndSortingRepository<Op
             "FROM OpenbaarLichaamDto b " +
             "WHERE b.code = :code ";
 
-
     List<OpenbaarLichaamDto> findOpenbaarLichaamDtoByCode(@Param("code") String code);
 }
