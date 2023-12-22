@@ -20,22 +20,22 @@ Assuming there is a main branch the following steps are made:
 
 For each feature (based on develop branch)
 
-- git checkout -b <feature>
+- git checkout -b \<feature\>
 - ... do some work and **test**
 - git add . # from feature branch
-- git commit -m "<feature>"
+- git commit -m "\<feature\>"
 - git push # to feature brance
 - git checkout develop # switch to develop branch
 - git pull # to get changes from others
-- git merge <feature> # <feature> -> develop incorporate changes from others
+- git merge \<feature\> # <feature> -\> develop incorporate changes from others
 - \# ... test and resolve merge conflicts in branch develop ...
 - git add . # to update develop branch
-- git commit -m <feature> # to develop branch
+- git commit -m \<feature\> # to develop branch
 - git push # to develop
 - git checkout main # switch to main branch
-- git merge develop # develop -> main
+- git merge develop # develop -\> main
 - git push # to main
-- git tag -a <version> -m "<feature>" main
+- git tag -a \<version\> -m "<feature>" main
 - git push --tags
 
 ## API
