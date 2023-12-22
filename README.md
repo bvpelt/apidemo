@@ -35,7 +35,7 @@ For each feature (based on develop branch)
 - git checkout main # switch to main branch
 - git merge develop # develop -\> main
 - git push # to main
-- git tag -a \<version\> -m "<feature>" main
+- git tag -a \<version\> -m "\<feature\>" main
 - git push --tags
 
 ## API
