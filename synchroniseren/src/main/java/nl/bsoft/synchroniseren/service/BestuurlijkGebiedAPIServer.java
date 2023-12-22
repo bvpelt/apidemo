@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,11 @@ public class BestuurlijkGebiedAPIServer {
         List<BestuurlijkGebiedDto> bestuurlijkGebiedDtoList = new ArrayList<BestuurlijkGebiedDto>();
         Iterable<BestuurlijkGebied> bestuurlijkgebiedList = new ArrayList<BestuurlijkGebied>();
 
-        bestuurlijkGebiedRepository.findAll(pageRequest).forEach(bestuurlijkGebiedDtoList::add);
+
+        LocalDate peilmoment = LocalDate.now();
+
+        // bestuurlijkGebiedRepository.findAll(pageRequest).forEach(bestuurlijkGebiedDtoList::add);
+        bestuurlijkGebiedRepository.findBestuurlijkGebiedActueel(pageRequest, peilmoment).forEach(bestuurlijkGebiedDtoList::add);
 
         bestuurlijkGebiedDtoList.forEach(
                 bestuurlijkGebiedDto -> {
@@ -41,7 +46,9 @@ public class BestuurlijkGebiedAPIServer {
         List<BestuurlijkGebiedDto> bestuurlijkGebiedDtoList = new ArrayList<BestuurlijkGebiedDto>();
         Iterable<BestuurlijkGebied> bestuurlijkgebiedList = new ArrayList<BestuurlijkGebied>();
 
-        bestuurlijkGebiedRepository.findBestuurlijkGebiedDtoByIdentificatie(identificatie).forEach(bestuurlijkGebiedDtoList::add);
+        LocalDate peilmoment = LocalDate.now();
+
+        bestuurlijkGebiedRepository.findBestuurlijkGebiedDtoByIdentificatieActueel(identificatie, peilmoment).forEach(bestuurlijkGebiedDtoList::add);
 
         bestuurlijkGebiedDtoList.forEach(
                 bestuurlijkGebiedDto -> {
