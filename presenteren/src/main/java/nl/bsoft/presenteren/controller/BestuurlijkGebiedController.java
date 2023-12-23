@@ -80,7 +80,6 @@ public class BestuurlijkGebiedController {
         log.info("BestuurlijkgebiedAPI - pageNumber: {}, pageSize: {}, sortBy: {}", pageNumber, pageSize, sortBy);
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
 
-
         if  (validAt == null) {
             validAt = LocalDate.now();
         }
@@ -93,7 +92,7 @@ public class BestuurlijkGebiedController {
     }
 
     @Operation(
-            operationId = "bestuurlijkeGebiedenGet",
+            operationId = "bestuurlijkeGebiedenIdentificatieGet",
             summary = "Collectie of all bestuurlijkegebieden",
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK.", content = {
