@@ -15,11 +15,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Slf4j
 @Service
 public class OpenbareLichamenImportService {
-
     private static final int MAX_PAGE_SIZE = 50;
     private final OpenbaarLichaamStorageService openbaarLichaamStorageService;
 
@@ -64,7 +62,6 @@ public class OpenbareLichamenImportService {
         }
         return counter;
     }
-
     public OpenbareLichamenGet200Response getOpenbaarLichaamPage(Integer page, Integer size) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(APIService.getApiUrl() + "/openbare-lichamen");
 
@@ -73,7 +70,6 @@ public class OpenbareLichamenImportService {
         log.debug("using url: {}", uriComponentsBuilder.build().toUri());
         return APIService.getDirectly(uriComponentsBuilder.build().toUri(), OpenbareLichamenGet200Response.class);
     }
-
     private int processOpenbareLichamen(UpdateCounter counter, List<OpenbaarLichaam> openbareLichamen) {
 
         openbareLichamen.stream().forEach(
@@ -83,7 +79,6 @@ public class OpenbareLichamenImportService {
         );
         return openbareLichamen.size();
     }
-
     private OpenbaarLichaamDto toDto(OpenbaarLichaam openbaarLichaam) {
         OpenbaarLichaamDto bestemming = null;
         try {
@@ -94,14 +89,12 @@ public class OpenbareLichamenImportService {
 
         return bestemming;
     }
-
     private OpenbaarLichaamDto CopyToDto(OpenbaarLichaamDto bron, LocalDateTime registratieMoment) {
         OpenbaarLichaamDto bestemming = new OpenbaarLichaamDto();
 
 
         return bestemming;
     }
-
     private void processOpenbareLichaam(UpdateCounter counter, OpenbaarLichaam openbaarLichaam) {
         log.info("Openbaarlichaam - code: {}, oin: {}, type: {}, naam: {}, bestuurslaag: {}",
                 openbaarLichaam.getCode().isPresent() ? openbaarLichaam.getCode().get() : "",
@@ -150,7 +143,6 @@ public class OpenbareLichamenImportService {
             }
         }
     }
-
     private boolean compairOpenbaarLichaam(OpenbaarLichaam openbaarLichaam, OpenbaarLichaamDto openbaarLichaamDto) {
         boolean equal = true;
 

@@ -1,4 +1,4 @@
-package nl.bsoft.synchroniseren.service;
+package nl.bsoft.presenteren.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.library.model.dto.OpenbaarLichaamDto;

@@ -16,26 +16,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-
 @Slf4j
 @Service
 public class BestuurlijkeGrenzenImportService {
-
     private static final int MAX_PAGE_SIZE = 50;
     private final APIService APIService;
     private final GeoService geoService;
     private final BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService;
-
     private final BestuurlijkgebiedMapper bestuurlijkgebiedMapper = new BestuurlijkgebiedMapperImpl();
-
     @Autowired
     public BestuurlijkeGrenzenImportService(APIService APIService, BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService, GeoService geoService) {
         this.APIService = APIService;
         this.bestuurlijkeGebiedenStorageService = bestuurlijkeGebiedenStorageService;
         this.geoService = geoService;
     }
-
     public UpdateCounter getAllBestuurlijkebebieden() {
         int page = 1;
         UpdateCounter counter = new UpdateCounter();
@@ -67,7 +61,6 @@ public class BestuurlijkeGrenzenImportService {
         }
         return counter;
     }
-
     private int processBestuurlijkeGrenzen(UpdateCounter counter, List<BestuurlijkGebied> bestuurlijkeGebieden) {
 
         bestuurlijkeGebieden.stream().forEach(
@@ -77,7 +70,6 @@ public class BestuurlijkeGrenzenImportService {
         );
         return bestuurlijkeGebieden.size();
     }
-
     private boolean compairBestuurlijkgebied(BestuurlijkGebied bestuurlijkGebied, BestuurlijkGebiedDto bestuurlijkGebiedDto) {
         boolean equal = true;
 
@@ -127,7 +119,6 @@ public class BestuurlijkeGrenzenImportService {
 
         return equal;
     }
-
     private BestuurlijkGebiedDto toDto(BestuurlijkGebied bestuurlijkGebied) {
         BestuurlijkGebiedDto bestemming = null;
         try {
@@ -138,7 +129,6 @@ public class BestuurlijkeGrenzenImportService {
 
         return bestemming;
     }
-
     private BestuurlijkGebiedDto CopyToDto(BestuurlijkGebiedDto bron, LocalDateTime registratieMoment) {
         BestuurlijkGebiedDto bestemming = new BestuurlijkGebiedDto();
         bestemming.setIdentificatie(bron.getIdentificatie());
@@ -152,7 +142,6 @@ public class BestuurlijkeGrenzenImportService {
 
         return bestemming;
     }
-
     private void procesBestuurlijkeGrens(UpdateCounter counter, BestuurlijkGebied bestuurlijkGebied) {
         log.info("Bestuurlijke gebied - domein: {}, identificatie: {}, type: {}", bestuurlijkGebied.getDomein(), bestuurlijkGebied.getIdentificatie(), bestuurlijkGebied.getType());
 
@@ -197,7 +186,6 @@ public class BestuurlijkeGrenzenImportService {
             }
         }
     }
-
     public BestuurlijkeGebiedenGet200Response getBestuurlijkGebiedPage(Integer page, Integer size) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(APIService.getApiUrl() + "/bestuurlijke-gebieden");
 

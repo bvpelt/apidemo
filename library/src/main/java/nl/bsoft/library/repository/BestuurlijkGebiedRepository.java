@@ -21,11 +21,11 @@ public interface BestuurlijkGebiedRepository extends PagingAndSortingRepository<
 
     @Query(
             value =
-                    "SELECT * FROM bestuurlijkgebied WHERE begingeldigheid <= :peilmoment AND ((eindgeldigheid IS NULL) OR (eindgeldigheid > :peilmoment))", nativeQuery = true)
-    List<BestuurlijkGebiedDto> findBestuurlijkGebiedActueel(Pageable pageable, LocalDate peilmoment);
+                    "SELECT * FROM bestuurlijkgebied WHERE begingeldigheid <= :validAt AND ((eindgeldigheid IS NULL) OR (eindgeldigheid > :validAt))", nativeQuery = true)
+    List<BestuurlijkGebiedDto> findBestuurlijkGebiedActueel(Pageable pageable, LocalDate validAt);
 
     @Query(
             value =
-                    "SELECT * FROM bestuurlijkgebied WHERE (identificatie = :identificatie ) AND ((begingeldigheid <= :peilmoment) AND ((eindgeldigheid IS NULL) OR (eindgeldigheid > :peilmoment))) ", nativeQuery = true)
-    List<BestuurlijkGebiedDto> findBestuurlijkGebiedDtoByIdentificatieActueel(@Param("identificatie") String identificatie, @Param("peilmoment") LocalDate peilmoment);
+                    "SELECT * FROM bestuurlijkgebied WHERE (identificatie = :identificatie ) AND ((begingeldigheid <= :validAt) AND ((eindgeldigheid IS NULL) OR (eindgeldigheid > :validAt))) ", nativeQuery = true)
+    List<BestuurlijkGebiedDto> findBestuurlijkGebiedDtoByIdentificatieActueel(@Param("identificatie") String identificatie, @Param("validAt") LocalDate validAt);
 }

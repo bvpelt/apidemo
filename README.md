@@ -11,6 +11,8 @@ See https://mvnrepository.com/
 ```bash
 mvn versions:display-dependency-updates
 ```
+## Dependencies
+- See https://dzone.com/articles/maven-multi-module-project-with-versioning
 
 ## Releases
 

@@ -1,4 +1,4 @@
-package nl.bsoft.synchroniseren.domain;
+package nl.bsoft.presenteren.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

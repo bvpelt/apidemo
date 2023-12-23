@@ -1,9 +1,9 @@
-package nl.bsoft.synchroniseren.service;
+package nl.bsoft.presenteren.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.library.model.dto.BestuurlijkGebiedDto;
 import nl.bsoft.library.repository.BestuurlijkGebiedRepository;
-import nl.bsoft.synchroniseren.domain.BestuurlijkGebied;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+import nl.bsoft.presenteren.domain.BestuurlijkGebied;
 @Slf4j
 @Service
 public class BestuurlijkGebiedAPIServer {
@@ -23,15 +23,11 @@ public class BestuurlijkGebiedAPIServer {
         this.bestuurlijkGebiedRepository = bestuurlijkGebiedRepository;
     }
 
-    public Iterable<BestuurlijkGebied> getBestuurlijkgebieden(PageRequest pageRequest) {
+    public Iterable<BestuurlijkGebied> getBestuurlijkgebieden(PageRequest pageRequest, LocalDate validAt) {
         List<BestuurlijkGebiedDto> bestuurlijkGebiedDtoList = new ArrayList<BestuurlijkGebiedDto>();
         Iterable<BestuurlijkGebied> bestuurlijkgebiedList = new ArrayList<BestuurlijkGebied>();
 
-
-        LocalDate peilmoment = LocalDate.now();
-
-        // bestuurlijkGebiedRepository.findAll(pageRequest).forEach(bestuurlijkGebiedDtoList::add);
-        bestuurlijkGebiedRepository.findBestuurlijkGebiedActueel(pageRequest, peilmoment).forEach(bestuurlijkGebiedDtoList::add);
+        bestuurlijkGebiedRepository.findBestuurlijkGebiedActueel(pageRequest, validAt).forEach(bestuurlijkGebiedDtoList::add);
 
         bestuurlijkGebiedDtoList.forEach(
                 bestuurlijkGebiedDto -> {
@@ -42,13 +38,11 @@ public class BestuurlijkGebiedAPIServer {
         return bestuurlijkgebiedList;
     }
 
-    public Iterable<BestuurlijkGebied> getBestuurlijkgebied(String identificatie) {
+    public Iterable<BestuurlijkGebied> getBestuurlijkgebied(String identificatie, LocalDate validAt) {
         List<BestuurlijkGebiedDto> bestuurlijkGebiedDtoList = new ArrayList<BestuurlijkGebiedDto>();
         Iterable<BestuurlijkGebied> bestuurlijkgebiedList = new ArrayList<BestuurlijkGebied>();
 
-        LocalDate peilmoment = LocalDate.now();
-
-        bestuurlijkGebiedRepository.findBestuurlijkGebiedDtoByIdentificatieActueel(identificatie, peilmoment).forEach(bestuurlijkGebiedDtoList::add);
+        bestuurlijkGebiedRepository.findBestuurlijkGebiedDtoByIdentificatieActueel(identificatie, validAt).forEach(bestuurlijkGebiedDtoList::add);
 
         bestuurlijkGebiedDtoList.forEach(
                 bestuurlijkGebiedDto -> {

@@ -1,0 +1,83 @@
+nl:
+  bsoft:
+    apidemo:
+      config:
+        bestuurlijkegrenzen:
+          rest:
+            api:
+              baseurl: https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2
+              apikey: d379f340-6900-4b3c-9e10-b6a4296fdfca
+              coordinatereferencesystem: epsg:28992
+              maxpagesize: 50
+
+logging:
+  level:
+    org:
+      apache:
+        http: INFO
+    nl:
+      bsoft: DEBUG
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  info:
+    env:
+      enabled: true
+  server:
+    port: 8091
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      path-mapping:
+        info: app-info
+        health: app-health
+      exposure:
+        include: '*'
+        exclude:
+
+server:
+  port: 8090
+
+spring:
+  application:
+    name: '@project.name@'
+  main:
+    banner-mode: 'off'
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: 'jdbc:postgresql://localhost:5432/ambtsgebied'
+    username: testuser
+    password: 12345
+  flyway:
+    enabled: true
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+        format_sql: true
+        jdbc:
+          batch_size: 100
+        enable_lazy_load_no_trans: true
+        event:
+          merge:
+            entity_copy_observer: allow
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: ALL
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+#    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
