@@ -1,0 +1,15 @@
+{
+  "code": "GM0014",
+  "oin": "00000001825783434000",
+  "_links": {
+    "bestuurlijkeGebieden": {
+      "href": "https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2/bestuurlijke-gebieden?openbaarLichaam=GM0014"
+    },
+    "self": {
+      "href": "https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2/openbare-lichamen/GM0014"
+    }
+  },
+  "type": "Gemeente",
+  "naam": "Groningen",
+  "bestuurslaag": "gemeente"
+}

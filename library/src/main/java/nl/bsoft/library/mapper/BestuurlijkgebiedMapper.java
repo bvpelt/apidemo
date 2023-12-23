@@ -22,10 +22,6 @@ import java.time.LocalDate;
         nullValueIterableMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
 public abstract class BestuurlijkgebiedMapper {
 
-    //@Autowired
-    //private WKTReader wktReader;
-
-
     @Mapping(target = "identificatie", source = "identificatie")
     @Mapping(target = "domein", source = "domein")
     @Mapping(target = "type", source = "type", qualifiedByName = "toType")
@@ -33,7 +29,6 @@ public abstract class BestuurlijkgebiedMapper {
     @Mapping(target = "eindGeldigheid", source = "embedded.metadata.eindGeldigheid", qualifiedByName = "toLocalDate")
     @Mapping(target = "geometrie", source = "geometrie", qualifiedByName = "toGeometrie")
     public abstract BestuurlijkGebiedDto toBestuurlijkgeBiedDto(BestuurlijkGebied bestuurlijkGebied) throws ParseException;
-
 
     @Named("toType")
     protected String toType(BestuurlijkGebied.TypeEnum type) {
@@ -44,7 +39,6 @@ public abstract class BestuurlijkgebiedMapper {
     protected Geometry toGeometrie(GeoJSON inputGeometry) throws ParseException {
 
         GeoService geoService = new GeoService(new GeoMapperImpl());
-        //Geometry geometry = wktReader.read(inputGeometry.toString());
         return geoService.geoJsonToJTS(inputGeometry);
 
 

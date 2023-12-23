@@ -3,10 +3,10 @@ package nl.bsoft.library;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
-import nl.bsoft.library.mapper.BestuurlijkgebiedMapper;
-import nl.bsoft.library.mapper.BestuurlijkgebiedMapperImpl;
-import nl.bsoft.library.mapper.GeoMapperImpl;
+import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbaarLichaam;
+import nl.bsoft.library.mapper.*;
 import nl.bsoft.library.model.dto.BestuurlijkGebiedDto;
+import nl.bsoft.library.model.dto.OpenbaarLichaamDto;
 import nl.bsoft.library.service.GeoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,8 @@ import java.time.ZoneId;
 @SpringBootTest
 class LibraryApplicationTests {
 
-    private final BestuurlijkgebiedMapper mapper = new BestuurlijkgebiedMapperImpl();
+    private final BestuurlijkgebiedMapper bestuurlijkeGebiedMapper = new BestuurlijkgebiedMapperImpl();
+    private final OpenbaarLichaamMapper openbaarLichaamMapper = new OpenbaarLichaamMapperImpl();
     @Autowired
     private ResourceLoader resourceLoader = null;
     @Autowired
@@ -46,17 +47,17 @@ class LibraryApplicationTests {
     }
 
     @Test
-    public void mapBestuurlijkGebiedtoDto() {
+    public void mapBestuurlijkGebiedto() {
         BestuurlijkGebied bestuurlijkGebied;
         GeoService geoService = new GeoService(new GeoMapperImpl());
 
         try {
-            File dataFile = resourceLoader.getResource("classpath:input.json").getFile();
+            File dataFile = resourceLoader.getResource("classpath:bestuurlijkgebied.json").getFile();
 
             bestuurlijkGebied = objectMapper.readValue(dataFile, BestuurlijkGebied.class);
             log.info("bestuurlijkgebied: \n{}", bestuurlijkGebied.toString());
 
-            BestuurlijkGebiedDto bestuurlijkGebiedDto = mapper.toBestuurlijkgeBiedDto(bestuurlijkGebied);
+            BestuurlijkGebiedDto bestuurlijkGebiedDto = bestuurlijkeGebiedMapper.toBestuurlijkgeBiedDto(bestuurlijkGebied);
 
             log.info("bestuurlijkgebiedDto: {}", bestuurlijkGebiedDto.toString());
 
@@ -64,9 +65,41 @@ class LibraryApplicationTests {
             Assert.isTrue(bestuurlijkGebied.getIdentificatie().equals(bestuurlijkGebiedDto.getIdentificatie()), "ddentificatie not mapped");
             Assert.isTrue(bestuurlijkGebied.getDomein().equals(bestuurlijkGebiedDto.getDomein()), "domein not mapped");
             Assert.isTrue(bestuurlijkGebied.getType().getValue().equals(bestuurlijkGebiedDto.getType()), "type not mapped");
+            Assert.notNull(bestuurlijkGebied.getEmbedded(), "Embedded not included");
+            Assert.notNull(bestuurlijkGebied.getEmbedded().getMetadata(), "Metadata not included");
+            Assert.isTrue(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().isPresent(), "begin geldigheid not present");
             Assert.isTrue(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get().equals(bestuurlijkGebiedDto.getBeginGeldigheid()), "beginGeldigheid not mapped");
             Assert.isTrue(!bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent(), "eindgeldigheid not expected");
             Assert.isTrue(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()).equals(bestuurlijkGebiedDto.getGeometrie()), "geometrie not mapped");
+        } catch (Exception e) {
+            log.error("Error occured: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void mapOpenbaarLichaamdto() {
+        OpenbaarLichaam openbaarLichaam;
+        GeoService geoService = new GeoService(new GeoMapperImpl());
+
+        try {
+            File dataFile = resourceLoader.getResource("classpath:openbaarlichaam.json").getFile();
+
+            openbaarLichaam = objectMapper.readValue(dataFile, OpenbaarLichaam.class);
+            log.info("openbaarLichaam: \n{}", openbaarLichaam.toString());
+
+            OpenbaarLichaamDto openbaarLichaamDto = openbaarLichaamMapper.toOpenbaarLichaamDto(openbaarLichaam);
+
+            log.info("openbaarLichaamDto: {}", openbaarLichaamDto.toString());
+
+            Assert.notNull(openbaarLichaamDto, "Mapping not successfull");
+            Assert.isTrue(openbaarLichaam.getCode().isPresent(), "code not present");
+            Assert.isTrue(openbaarLichaam.getCode().get().equals(openbaarLichaamDto.getCode()), "code not mapped");
+            Assert.isTrue(openbaarLichaam.getOin().isPresent(), "oin not present");
+            Assert.isTrue(openbaarLichaam.getOin().get().equals(openbaarLichaamDto.getOin()), "oin not mapped");
+            Assert.isTrue(openbaarLichaam.getType().toString().equals(openbaarLichaamDto.getType()), "type not mapped");
+            Assert.isTrue(openbaarLichaam.getNaam().equals(openbaarLichaamDto.getNaam()), "naam not mapped");
+            Assert.isTrue(openbaarLichaam.getBestuurslaag().toString().equals(openbaarLichaamDto.getBestuurslaag()), "bestuurslaag not mapped");
         } catch (Exception e) {
             log.error("Error occured: {}", e.getMessage());
             throw new RuntimeException(e);

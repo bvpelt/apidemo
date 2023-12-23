@@ -3,6 +3,8 @@ package nl.bsoft.synchroniseren.service;
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkeGebiedenGet200Response;
+import nl.bsoft.library.mapper.BestuurlijkgebiedMapper;
+import nl.bsoft.library.mapper.BestuurlijkgebiedMapperImpl;
 import nl.bsoft.library.model.dto.BestuurlijkGebiedDto;
 import nl.bsoft.library.service.APIService;
 import nl.bsoft.library.service.BestuurlijkeGebiedenStorageService;
@@ -24,6 +26,8 @@ public class BestuurlijkeGrenzenImportService {
     private final APIService APIService;
     private final GeoService geoService;
     private final BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService;
+
+    private final BestuurlijkgebiedMapper bestuurlijkgebiedMapper = new BestuurlijkgebiedMapperImpl();
 
     @Autowired
     public BestuurlijkeGrenzenImportService(APIService APIService, BestuurlijkeGebiedenStorageService bestuurlijkeGebiedenStorageService, GeoService geoService) {
@@ -125,17 +129,12 @@ public class BestuurlijkeGrenzenImportService {
     }
 
     private BestuurlijkGebiedDto toDto(BestuurlijkGebied bestuurlijkGebied) {
-        BestuurlijkGebiedDto bestemming = new BestuurlijkGebiedDto();
-        bestemming.setIdentificatie(bestuurlijkGebied.getIdentificatie());
-        bestemming.setDomein(bestuurlijkGebied.getDomein());
-        bestemming.setType(bestuurlijkGebied.getType().getValue());
-        bestemming.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
-        bestemming.setBeginGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get());
-        bestemming.setBeginRegistratie(LocalDateTime.now());
-        if (bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent()) {
-            bestemming.setEindGeldigheid(bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().get());
+        BestuurlijkGebiedDto bestemming = null;
+        try {
+            bestemming = bestuurlijkgebiedMapper.toBestuurlijkgeBiedDto(bestuurlijkGebied);
+        } catch (Exception e) {
+            log.error("Error mapping bestuurlijkgebied: {}", e); // skip, log error and continue
         }
-        bestemming.setGeometrie(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()));
 
         return bestemming;
     }
@@ -164,9 +163,12 @@ public class BestuurlijkeGrenzenImportService {
             log.info("Create and store new entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
 
             BestuurlijkGebiedDto bestuurlijkGebiedDto = toDto(bestuurlijkGebied);
-
-            bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
-            counter.add();
+            if (bestuurlijkGebiedDto != null) {
+                bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
+                counter.add();
+            } else {
+                counter.skipped();
+            }
         } else {
             if (size == 1) { // exactly 1 entrie found, update
                 if (!compairBestuurlijkgebied(bestuurlijkGebied, bestuurlijkGebiedDtoList.get(0))) {
@@ -199,7 +201,7 @@ public class BestuurlijkeGrenzenImportService {
     public BestuurlijkeGebiedenGet200Response getBestuurlijkGebiedPage(Integer page, Integer size) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(APIService.getApiUrl() + "/bestuurlijke-gebieden");
 
-        uriComponentsBuilder.queryParam("type", "territoriaal");
+        uriComponentsBuilder.queryParam("type", "territoriaalInclusiefEEZ");
         uriComponentsBuilder.queryParam("page", page);
         uriComponentsBuilder.queryParam("pageSize", size);
         log.debug("using url: {}", uriComponentsBuilder.build().toUri());

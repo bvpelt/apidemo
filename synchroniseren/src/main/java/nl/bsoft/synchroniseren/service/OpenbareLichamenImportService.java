@@ -3,6 +3,8 @@ package nl.bsoft.synchroniseren.service;
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbaarLichaam;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbareLichamenGet200Response;
+import nl.bsoft.library.mapper.OpenbaarLichaamMapper;
+import nl.bsoft.library.mapper.OpenbaarLichaamMapperImpl;
 import nl.bsoft.library.model.dto.OpenbaarLichaamDto;
 import nl.bsoft.library.service.APIService;
 import nl.bsoft.library.service.OpenbaarLichaamStorageService;
@@ -20,6 +22,8 @@ public class OpenbareLichamenImportService {
 
     private static final int MAX_PAGE_SIZE = 50;
     private final OpenbaarLichaamStorageService openbaarLichaamStorageService;
+
+    private final OpenbaarLichaamMapper openbaarLichaamMapper = new OpenbaarLichaamMapperImpl();
     private final APIService APIService;
 
     @Autowired
@@ -81,14 +85,13 @@ public class OpenbareLichamenImportService {
     }
 
     private OpenbaarLichaamDto toDto(OpenbaarLichaam openbaarLichaam) {
-        OpenbaarLichaamDto bestemming = new OpenbaarLichaamDto();
-        bestemming.setCode(openbaarLichaam.getCode().get());
-        if (openbaarLichaam.getOin().isPresent()) {
-            bestemming.setOin(openbaarLichaam.getOin().get());
+        OpenbaarLichaamDto bestemming = null;
+        try {
+            bestemming = openbaarLichaamMapper.toOpenbaarLichaamDto(openbaarLichaam);
+        } catch (Exception e) {
+            log.error("Error mapping bestuurlijkgebied: {}", e); // skip, log error and continue
         }
-        bestemming.setType(openbaarLichaam.getType().getValue());
-        bestemming.setNaam(openbaarLichaam.getNaam());
-        bestemming.setBestuurslaag(openbaarLichaam.getBestuurslaag().getValue());
+
         return bestemming;
     }
 
