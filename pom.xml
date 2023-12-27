@@ -29,7 +29,7 @@
         <jackson-bom.version>2.16.0</jackson-bom.version>
         <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
         <org.mapstruct-binding.version>0.2.0</org.mapstruct-binding.version>
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.12.0</maven-compiler-plugin.version>
         <net.logstash.logback.version>7.4</net.logstash.logback.version>
         <openapi-plugin.version>6.6.0</openapi-plugin.version>
         <org.apache.http.version>4.5.14</org.apache.http.version>
@@ -49,7 +49,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>nl.bsoft</groupId>
+                <groupId>nl.bsoft.apidemo</groupId>
                 <artifactId>library</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>

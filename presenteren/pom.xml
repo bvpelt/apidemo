@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-
+    <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>presenteren</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
@@ -18,7 +18,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>nl.bsoft</groupId>
+            <groupId>nl.bsoft.apidemo</groupId>
             <artifactId>library</artifactId>
         </dependency>
 

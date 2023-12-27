@@ -6,15 +6,32 @@ See https://www.baeldung.com/maven-dependency-latest-version
 
 See https://mvnrepository.com/
 
-## Displaying Available Updates
+## Dependencies
+
+- See https://dzone.com/articles/maven-multi-module-project-with-versioning
+
+### Maven
+
+- See https://maven.apache.org/guides/getting-started/index.html
+- Default repository https://repo.maven.apache.org/maven2/
+
+Generate documentation using maven's documentation system
+
+```bash
+mvn archetype:generate \
+  -DarchetypeGroupId=org.apache.maven.archetypes \
+  -DarchetypeArtifactId=maven-archetype-site \
+  -DgroupId=com.mycompany.app \
+  -DartifactId=my-app-site
+```
+
+### Displaying Available Updates
 
 ```bash
 mvn versions:display-dependency-updates
 ```
-## Dependencies
-- See https://dzone.com/articles/maven-multi-module-project-with-versioning
 
-## Releases
+## Building Releases
 
 Assuming there is a main branch the following steps are made:
 
