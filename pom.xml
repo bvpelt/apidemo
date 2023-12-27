@@ -26,6 +26,7 @@
         <flyway-core.version>10.1.0</flyway-core.version>
         <lombok.version>1.18.30</lombok.version>
 
+        <apidemo.library>0.0.1-SNAPSHOT</apidemo.library>
         <jackson-bom.version>2.16.0</jackson-bom.version>
         <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
         <org.mapstruct-binding.version>0.2.0</org.mapstruct-binding.version>
@@ -51,7 +52,7 @@
             <dependency>
                 <groupId>nl.bsoft.apidemo</groupId>
                 <artifactId>library</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${apidemo.library}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
