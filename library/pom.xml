@@ -6,12 +6,12 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.6-SNAPSHOT</version>
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>library</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
     <name>library</name>
     <description>library</description>
     <packaging>jar</packaging>
@@ -24,7 +24,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>${org.flywaydb.version}</version>
         </dependency>
 
         <dependency>
@@ -36,34 +35,29 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>${org.flywaydb.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
-            <version>${hibernate.version}</version>
         </dependency>
 
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>${openapi-plugin.version}</version>
                 <executions>
                     <execution>
-                        <!-- ozon api -->
+                        <!-- bestuurlijkegrenzen api -->
                         <id>generate-openapi-ozon-api</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -98,9 +92,6 @@
                                 <validateSpec>true</validateSpec>
                             </configOptions>
                             <schemaMappings>
-                                <!--
-                                <schemaMapping>GeoJsonGeometry=org.wololo.geojson.GeoJSON</schemaMapping>
-                                -->
                                 <schemaMapping>GeoJSONGeometry=org.wololo.geojson.GeoJSON</schemaMapping>
                                 <schemaMapping>Point=org.wololo.geojson.Point</schemaMapping>
                                 <schemaMapping>MultiPoint=org.wololo.geojson.MultiPoint</schemaMapping>
@@ -116,52 +107,15 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>replacer</artifactId>
-                <version>1.5.3</version>
-                <configuration>
-                    <basedir>
-                        ${project.build.directory}/generated-sources/openapi/src/main/java/nl/bsoft/bestuurlijkegrenzen/generated/model
-                    </basedir>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                    <replacements>
-                        <replacement>
-                            <token>ObjectTypeEnum objectType</token>
-                            <value>String objectType</value>
-                        </replacement>
-                        <replacement>
-                            <token>ObjectTypeEnum getObjectType</token>
-                            <value>String getObjectType</value>
-                        </replacement>
-                    </replacements>
-                </configuration>
-            </plugin>
-
-
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>10.3.0</version>
                 <configuration>
                     <url>jdbc:postgresql://localhost:5432/ambtsgebied</url>
                     <user>testuser</user>
                     <password>12345</password>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>42.6.0</version>
-                    </dependency>
-                </dependencies>
             </plugin>
-
         </plugins>
-
     </build>
-
 </project>

@@ -12,7 +12,7 @@
 
     <groupId>nl.bsoft</groupId>
     <artifactId>apidemo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
     <name>apidemo</name>
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
@@ -23,18 +23,19 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <com.betadriven.version>2.4</com.betadriven.version>
-        <flyway-core.version>10.1.0</flyway-core.version>
+        <flyway-core.version>10.4.0</flyway-core.version>
         <lombok.version>1.18.30</lombok.version>
 
-        <apidemo.library>0.0.1-SNAPSHOT</apidemo.library>
+        <apidemo.library>0.6-SNAPSHOT</apidemo.library>
         <jackson-bom.version>2.16.0</jackson-bom.version>
+        <org.codehaus.version>3.4.0</org.codehaus.version>
         <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
         <org.mapstruct-binding.version>0.2.0</org.mapstruct-binding.version>
+        <org.postgresql.version>42.6.0</org.postgresql.version>
         <maven-compiler-plugin.version>3.12.0</maven-compiler-plugin.version>
         <net.logstash.logback.version>7.4</net.logstash.logback.version>
         <openapi-plugin.version>6.6.0</openapi-plugin.version>
         <org.apache.http.version>4.5.14</org.apache.http.version>
-        <org.flywaydb.version>10.4.0</org.flywaydb.version>
         <org.openapitools.nullable>0.2.6</org.openapitools.nullable>
         <org.springdoc.version>2.3.0</org.springdoc.version>
         <org.wololo.version>0.18.1</org.wololo.version>
@@ -55,11 +56,9 @@
                 <version>${apidemo.library}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring.cloud-version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.16.0</version>
             </dependency>
             <dependency>
                 <groupId>org.wololo</groupId>
@@ -92,6 +91,11 @@
                 <version>${flyway-core.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway-core.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${org.mapstruct.version}</version>
@@ -106,11 +110,28 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-spatial</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${org.postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
 
+    <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -192,34 +213,58 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>${org.mapstruct-binding.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok-mapstruct-binding</artifactId>
+                                <version>${org.mapstruct-binding.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.openapitools</groupId>
+                    <artifactId>openapi-generator-maven-plugin</artifactId>
+                    <version>${openapi-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-maven-plugin</artifactId>
+                    <version>${flyway-core.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                            <version>${org.postgresql.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${org.codehaus.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

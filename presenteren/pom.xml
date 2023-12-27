@@ -5,12 +5,12 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.6-SNAPSHOT</version>
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>presenteren</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>presenteren</name>
     <description>presenteren</description>
@@ -67,7 +67,9 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <!--
                 <version>3.2.0</version>
+                -->
                 <executions>
                     <execution>
                         <id>add-source</id>

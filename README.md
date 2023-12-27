@@ -6,9 +6,28 @@ See https://www.baeldung.com/maven-dependency-latest-version
 
 See https://mvnrepository.com/
 
-## Dependencies
+## Multimodule project
 
 - See https://dzone.com/articles/maven-multi-module-project-with-versioning
+
+## Dependencies
+- See https://maven.apache.org/plugins/maven-dependency-plugin/usage.html
+
+### Options
+The following options are possible
+- dependency:resolve
+- dependency:resolve-plugins
+- dependency:sources
+
+#### dependency:resolve
+This goal simply tells maven to resolve all test scope (includes compile) dependencies and then displays the resolved versions. This is intended to help ensure all dependencies are downloaded to the local repository. This is useful when troubleshooting or during intermittent remote repository failures when repeatedly building multiproject modules is undersirable and the build is failing on dependency resolution.
+
+#### dependency:resolve-plugins
+This is the same as the resolve goal except it resolves plugins and optionally their dependencies.
+
+#### dependency:sources
+This is the same as the resolve goal except it includes the source attachments if they exist. This is useful when you want to download source attachments to your local repository.
+
 
 ### Maven
 
