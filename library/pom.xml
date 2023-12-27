@@ -6,12 +6,12 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.5</version>
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>library</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5</version>
     <name>library</name>
     <description>library</description>
     <packaging>jar</packaging>

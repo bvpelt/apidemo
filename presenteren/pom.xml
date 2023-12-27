@@ -5,12 +5,12 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.5</version>
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>presenteren</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5</version>
     <packaging>war</packaging>
     <name>presenteren</name>
     <description>presenteren</description>
