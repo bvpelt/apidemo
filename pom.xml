@@ -22,22 +22,29 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
+        <apidemo.library>0.6-SNAPSHOT</apidemo.library>
         <com.betadriven.version>2.4</com.betadriven.version>
         <flyway-core.version>10.4.0</flyway-core.version>
-        <lombok.version>1.18.30</lombok.version>
-
-        <apidemo.library>0.6-SNAPSHOT</apidemo.library>
+        <io.swagger.version>2.2.19</io.swagger.version>
         <jackson-bom.version>2.16.0</jackson-bom.version>
-        <org.codehaus.version>3.4.0</org.codehaus.version>
-        <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
-        <org.mapstruct-binding.version>0.2.0</org.mapstruct-binding.version>
-        <org.postgresql.version>42.6.0</org.postgresql.version>
+        <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+        <jakarta.validation.version>3.0.2</jakarta.validation.version>
+        <lombok.version>1.18.30</lombok.version>
         <maven-compiler-plugin.version>3.12.0</maven-compiler-plugin.version>
         <net.logstash.logback.version>7.4</net.logstash.logback.version>
+        <org.codehaus.version>3.4.0</org.codehaus.version>
         <openapi-plugin.version>6.6.0</openapi-plugin.version>
+        <org.apache.commons.version>3.13.0</org.apache.commons.version>
         <org.apache.http.version>4.5.14</org.apache.http.version>
+        <org.junit.jupiter.version>5.10.1</org.junit.jupiter.version>
+        <org.locationtech>1.18.1</org.locationtech>
+        <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
+        <org.mapstruct-binding.version>0.2.0</org.mapstruct-binding.version>
         <org.openapitools.nullable>0.2.6</org.openapitools.nullable>
+        <org.postgresql.version>42.6.0</org.postgresql.version>
+        <org.slf4j.version>2.0.9</org.slf4j.version>
         <org.springdoc.version>2.3.0</org.springdoc.version>
+        <org.tomcat.version>10.1.16</org.tomcat.version>
         <org.wololo.version>0.18.1</org.wololo.version>
         <spring.cloud-version>2022.0.4</spring.cloud-version>
     </properties>
@@ -56,19 +63,14 @@
                 <version>${apidemo.library}</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>2.16.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wololo</groupId>
-                <artifactId>jts2geojson</artifactId>
-                <version>${org.wololo.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.bedatadriven</groupId>
                 <artifactId>jackson-datatype-jts</artifactId>
                 <version>${com.betadriven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson-bom.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -76,9 +78,34 @@
                 <version>${jackson-bom.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson-bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
+                <version>${io.swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta.persistence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId> jakarta.validation</groupId>
+                <artifactId> jakarta.validation-api</artifactId>
+                <version>${jakarta.validation.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${net.logstash.logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${org.apache.commons.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -96,6 +123,21 @@
                 <version>${flyway-core.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-spatial</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId> org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${org.junit.jupiter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.locationtech.jts</groupId>
+                <artifactId>jts-core</artifactId>
+                <version>${org.locationtech}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${org.mapstruct.version}</version>
@@ -106,20 +148,31 @@
                 <version>${org.openapitools.nullable}</version>
             </dependency>
             <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${org.postgresql.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-spatial</artifactId>
-                <version>${hibernate.version}</version>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${org.slf4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${org.postgresql.version}</version>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${org.tomcat.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wololo</groupId>
+                <artifactId>jts2geojson</artifactId>
+                <version>${org.wololo.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>

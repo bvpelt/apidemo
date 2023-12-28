@@ -15,9 +15,17 @@ See https://mvnrepository.com/
 
 ### Options
 The following options are possible
+- dependency:analyze
+- dependency:purge-local-repository
 - dependency:resolve
 - dependency:resolve-plugins
 - dependency:sources
+
+#### dependency:analyze
+This goal performs byte code analysis to determine missing or unused dependencies. This goal is meant to be launched from the command line. It will fork the build and execute test-compile so there are class files to analyze.
+
+#### dependency:purge-local-repository
+This goal is meant to delete all of the dependencies for the current project (or projects, in the case of a multimodule build) from the local repository.
 
 #### dependency:resolve
 This goal simply tells maven to resolve all test scope (includes compile) dependencies and then displays the resolved versions. This is intended to help ensure all dependencies are downloaded to the local repository. This is useful when troubleshooting or during intermittent remote repository failures when repeatedly building multiproject modules is undersirable and the build is failing on dependency resolution.
