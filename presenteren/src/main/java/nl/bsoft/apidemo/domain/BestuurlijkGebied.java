@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BestuurlijkGebied implements Serializable {
+    private static final long serialVersionUID = 3L;
 
     private Long id;
 
