@@ -14,6 +14,12 @@
     <version>0.7-SNAPSHOT</version>
     <name>presenteren</name>
     <description>presenteren</description>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/license/mit/</url>
+        </license>
+    </licenses>
 
     <dependencies>
         <dependency>

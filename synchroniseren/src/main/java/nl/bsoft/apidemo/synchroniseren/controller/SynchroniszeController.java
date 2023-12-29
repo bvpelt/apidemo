@@ -2,9 +2,9 @@ package nl.bsoft.apidemo.synchroniseren.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.bsoft.apidemo.service.BestuurlijkeGrenzenProcessingService;
-import nl.bsoft.apidemo.service.OpenbareLichamenProcessingService;
-import nl.bsoft.apidemo.service.UpdateCounter;
+import nl.bsoft.apidemo.synchroniseren.service.BestuurlijkeGrenzenProcessingService;
+import nl.bsoft.apidemo.synchroniseren.service.OpenbareLichamenProcessingService;
+import nl.bsoft.apidemo.synchroniseren.service.UpdateCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

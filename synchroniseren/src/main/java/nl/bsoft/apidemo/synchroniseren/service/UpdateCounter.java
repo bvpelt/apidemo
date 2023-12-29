@@ -1,4 +1,4 @@
-package nl.bsoft.apidemo.service;
+package nl.bsoft.apidemo.synchroniseren.service;
 
 import lombok.Getter;
 import lombok.Setter;

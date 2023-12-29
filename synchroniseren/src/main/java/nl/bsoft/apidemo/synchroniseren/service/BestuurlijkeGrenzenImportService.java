@@ -1,4 +1,4 @@
-package nl.bsoft.apidemo.service;
+package nl.bsoft.apidemo.synchroniseren.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.apidemo.library.mapper.BestuurlijkgebiedMapper;
@@ -160,10 +160,16 @@ public class BestuurlijkeGrenzenImportService {
             log.info("Create and store new entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
 
             BestuurlijkGebiedDto bestuurlijkGebiedDto = toDto(bestuurlijkGebied);
+
             if (bestuurlijkGebiedDto != null) {
+                // Fill required fields
+                bestuurlijkGebiedDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
+                bestuurlijkGebiedDto.setBeginRegistratie(LocalDateTime.now());
+                // Save entry
                 bestuurlijkeGebiedenStorageService.Save(bestuurlijkGebiedDto);
                 counter.add();
             } else {
+                log.error("Skipped bestuurlijkgebied with identificatie: {} - mapping error", bestuurlijkGebied.getIdentificatie());
                 counter.skipped();
             }
         } else {

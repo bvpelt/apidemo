@@ -11,36 +11,79 @@ See https://mvnrepository.com/
 - See https://dzone.com/articles/maven-multi-module-project-with-versioning
 
 ## Dependencies
+
 - See https://maven.apache.org/plugins/maven-dependency-plugin/usage.html
 
 ### Options
+
 The following options are possible
+
 - dependency:analyze
+- dependency:analyze-dep-mgt
+- dependency:analyze-report
+- dependency:build-classpath
+- dependency:list-repositories
 - dependency:purge-local-repository
 - dependency:resolve
 - dependency:resolve-plugins
 - dependency:sources
+- dependency:tree
 
 #### dependency:analyze
-This goal performs byte code analysis to determine missing or unused dependencies. This goal is meant to be launched from the command line. It will fork the build and execute test-compile so there are class files to analyze.
+
+This goal performs byte code analysis to determine missing or unused dependencies. This goal is meant to be launched
+from the command line. It will fork the build and execute test-compile so there are class files to analyze.
+
+#### dependency:analyze-dep-mgt
+This goal looks at the dependencies after final resolution and looks for mismatches in your dependencyManagement section.
+
+#### dependency:analyze-report
+This goal is used to include a report of the dependencies in the output of the maven-site-plugin.
+
+#### dependency:build-classpath
+This goal will output a classpath string of dependencies from the local repository to a file or log and optionally attach and deploy the file.
+
+#### dependency:list-repositories
+This goal lists all the repositories that this build depends upon. It shows repositories defined in your settings, poms, and declared in transitive dependency poms.
 
 #### dependency:purge-local-repository
-This goal is meant to delete all of the dependencies for the current project (or projects, in the case of a multimodule build) from the local repository.
+
+This goal is meant to delete all of the dependencies for the current project (or projects, in the case of a multimodule
+build) from the local repository.
 
 #### dependency:resolve
-This goal simply tells maven to resolve all test scope (includes compile) dependencies and then displays the resolved versions. This is intended to help ensure all dependencies are downloaded to the local repository. This is useful when troubleshooting or during intermittent remote repository failures when repeatedly building multiproject modules is undersirable and the build is failing on dependency resolution.
+
+This goal simply tells maven to resolve all test scope (includes compile) dependencies and then displays the resolved
+versions. This is intended to help ensure all dependencies are downloaded to the local repository. This is useful when
+troubleshooting or during intermittent remote repository failures when repeatedly building multiproject modules is
+undersirable and the build is failing on dependency resolution.
 
 #### dependency:resolve-plugins
+
 This is the same as the resolve goal except it resolves plugins and optionally their dependencies.
 
 #### dependency:sources
-This is the same as the resolve goal except it includes the source attachments if they exist. This is useful when you want to download source attachments to your local repository.
 
+This is the same as the resolve goal except it includes the source attachments if they exist. This is useful when you
+want to download source attachments to your local repository.
+
+#### dependency:tree
+This goal is used to view the dependency hierarchy of the project currently being built. It will output the resolved tree of dependencies that the Maven build process actually uses.
+
+Options:
+- \-DoutputFile=/path/to/file
+- \-DoutputType=\<format\>
+  - text
+  - dot
+  - graphml
+  - tgf
 
 ### Maven
 
 - See https://maven.apache.org/guides/getting-started/index.html
 - Default repository https://repo.maven.apache.org/maven2/
+
+# Documentation
 
 Generate documentation using maven's documentation system
 
@@ -50,6 +93,15 @@ mvn archetype:generate \
   -DarchetypeArtifactId=maven-archetype-site \
   -DgroupId=com.mycompany.app \
   -DartifactId=my-app-site
+```
+
+## Maven site
+
+### site
+Generate documentation
+
+```bash
+mvn site
 ```
 
 ### Displaying Available Updates

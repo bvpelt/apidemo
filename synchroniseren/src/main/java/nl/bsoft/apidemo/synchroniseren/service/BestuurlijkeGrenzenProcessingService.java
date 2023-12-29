@@ -1,4 +1,4 @@
-package nl.bsoft.apidemo.service;
+package nl.bsoft.apidemo.synchroniseren.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
