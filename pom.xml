@@ -25,6 +25,7 @@
         <apidemo.library>0.6-SNAPSHOT</apidemo.library>
         <com.betadriven.version>2.4</com.betadriven.version>
         <com.google.code.version>3.0.2</com.google.code.version>
+        <commons-codec.version>1.16.0</commons-codec.version>
         <flyway-core.version>10.4.0</flyway-core.version>
         <io.swagger.version>2.2.19</io.swagger.version>
         <jackson-bom.version>2.16.0</jackson-bom.version>
@@ -87,6 +88,11 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson-bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
@@ -252,15 +258,18 @@
         </dependency>
 -->
         <!-- geography -->
+        <!--
         <dependency>
             <groupId>org.wololo</groupId>
             <artifactId>jts2geojson</artifactId>
         </dependency>
+        -->
+        <!--
         <dependency>
             <groupId>com.bedatadriven</groupId>
             <artifactId>jackson-datatype-jts</artifactId>
         </dependency>
-
+-->
         <!-- monitoring -->
         <dependency>
             <groupId>net.logstash.logback</groupId>
