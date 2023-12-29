@@ -24,6 +24,7 @@
 
         <apidemo.library>0.6-SNAPSHOT</apidemo.library>
         <com.betadriven.version>2.4</com.betadriven.version>
+        <com.google.code.version>3.0.2</com.google.code.version>
         <flyway-core.version>10.4.0</flyway-core.version>
         <io.swagger.version>2.2.19</io.swagger.version>
         <jackson-bom.version>2.16.0</jackson-bom.version>
@@ -66,6 +67,11 @@
                 <groupId>com.bedatadriven</groupId>
                 <artifactId>jackson-datatype-jts</artifactId>
                 <version>${com.betadriven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${com.google.code.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -185,15 +191,17 @@
 
 
     <dependencies>
+        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
@@ -258,11 +266,13 @@
         </dependency>
 
         <!-- test -->
+        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
     </dependencies>
 
     <build>
