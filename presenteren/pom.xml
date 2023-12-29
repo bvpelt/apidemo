@@ -11,7 +11,7 @@
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>presenteren</artifactId>
-    <version>${apidemo.library}</version>
+    <version>0.7-SNAPSHOT</version>
     <name>presenteren</name>
     <description>presenteren</description>
 

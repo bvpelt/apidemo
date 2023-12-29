@@ -10,7 +10,7 @@
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>synchroniseren</artifactId>
-    <version>${apidemo.library}</version>
+    <version>0.7-SNAPSHOT</version>
     <name>synchroniseren</name>
     <description>synchroniseren</description>
 

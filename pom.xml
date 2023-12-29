@@ -10,6 +10,13 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <groupId>nl.bsoft</groupId>
+    <artifactId>apidemo</artifactId>
+    <version>0.7-SNAPSHOT</version>
+    <name>apidemo</name>
+    <description>Demo project for Spring Boot</description>
+    <packaging>pom</packaging>
+
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -23,6 +30,7 @@
         <flyway-core.version>10.4.0</flyway-core.version>
         <io.swagger.version>2.2.19</io.swagger.version>
         <jackson-bom.version>2.16.0</jackson-bom.version>
+        <jakarta.activation.version>2.1.2</jakarta.activation.version>
         <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
         <lombok.version>1.18.30</lombok.version>
@@ -39,19 +47,12 @@
         <org.openapitools.nullable>0.2.6</org.openapitools.nullable>
         <org.postgresql.version>42.6.0</org.postgresql.version>
         <org.slf4j.version>2.0.9</org.slf4j.version>
+        <org.springframework.version>6.1.1</org.springframework.version>
         <org.springdoc.version>2.3.0</org.springdoc.version>
         <org.tomcat.version>10.1.16</org.tomcat.version>
         <org.wololo.version>0.18.1</org.wololo.version>
         <spring.cloud-version>2022.0.4</spring.cloud-version>
     </properties>
-
-    <groupId>nl.bsoft</groupId>
-    <artifactId>apidemo</artifactId>
-    <version>${apidemo.library}</version>
-    <name>apidemo</name>
-    <description>Demo project for Spring Boot</description>
-    <packaging>pom</packaging>
-
 
     <modules>
         <module>library</module>
@@ -61,6 +62,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>nl.bsoft.apidemo</groupId>
                 <artifactId>library</artifactId>
@@ -100,6 +109,11 @@
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations-jakarta</artifactId>
                 <version>${io.swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${jakarta.activation.version}</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.persistence</groupId>
@@ -172,6 +186,11 @@
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${org.springframework.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${org.springdoc.version}</version>
@@ -191,13 +210,7 @@
                 <artifactId>jts2geojson</artifactId>
                 <version>${org.wololo.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring.cloud-version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
