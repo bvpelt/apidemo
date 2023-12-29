@@ -10,19 +10,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>nl.bsoft</groupId>
-    <artifactId>apidemo</artifactId>
-    <version>0.6</version>
-    <name>apidemo</name>
-    <description>Demo project for Spring Boot</description>
-    <packaging>pom</packaging>
-
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <apidemo.library>0.6</apidemo.library>
+        <apidemo.library>0.7-SNAPSHOT</apidemo.library>
 
         <com.betadriven.version>2.4</com.betadriven.version>
         <com.google.code.version>3.0.2</com.google.code.version>
@@ -51,6 +44,14 @@
         <org.wololo.version>0.18.1</org.wololo.version>
         <spring.cloud-version>2022.0.4</spring.cloud-version>
     </properties>
+
+    <groupId>nl.bsoft</groupId>
+    <artifactId>apidemo</artifactId>
+    <version>${apidemo.library}</version>
+    <name>apidemo</name>
+    <description>Demo project for Spring Boot</description>
+    <packaging>pom</packaging>
+
 
     <modules>
         <module>library</module>
