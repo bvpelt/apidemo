@@ -1,4 +1,4 @@
-package nl.bsoft.apidemo.service;
+package nl.bsoft.apidemo.presenteren.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.apidemo.library.model.dto.OpenbaarLichaamDto;

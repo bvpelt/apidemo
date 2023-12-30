@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright 2023 BSoft
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+https://opensource.org/license/mit/
+-->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/DECORATION/1.6.0"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd">
+    <body>
+        <menu name="Modules">
+            <item name="presenteren" href="../presenteren/index.html"></item>
+            <item name="synchroniseren" href="../synchroniseren/index.html"></item>
+        </menu>
+
+        <menu name="Project Documentation">
+            <item name="Project Information" href="project-info.html" >
+                <item name="Dependencies" href="dependencies.html"></item>
+                <item name="Dependency Information" href="dependency-info.html"></item>
+                <item name="Dependency Management" href="dependency-management.html"></item>
+                <item name="Distribution Management" href="distribution-management.html"></item>
+                <item name="About" href="index.html"></item>
+                <item name="Licenses" href="licenses.html"></item>
+                <item name="Plugin Management" href="plugin-management.html"></item>
+                <item name="Plugins" href="plugins.html"></item>
+                <item name="Source Code Management" href="scm.html"></item>
+                <item name="Summary" href="summary.html"></item>
+                <item name="Team" href="team.html"></item>
+            </item>
+            <item name="Project Reports" href="project-reports.html">
+                <item name="Dependency Analysis" href="dependency-analysis.html"></item>
+                <item name="Source Xref" href="xref/index.html"></item>
+                <item name="Test Source Xref" href="xref-test/index.html"></item>
+            </item>
+        </menu>
+
+        <menu name="Team documentation">
+            <item name="Library" href="library.html"></item>
+        </menu>
+
+    </body>
+</project>

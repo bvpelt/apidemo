@@ -98,12 +98,16 @@ mvn archetype:generate \
 ## Maven site
 
 ### site
-Generate documentation
+Generate documentation for each project
 
 ```bash
 mvn site
 ```
 
+Generate documentation for the multimodule project
+```bash
+mvn site:stage
+```
 ### Displaying Available Updates
 
 ```bash

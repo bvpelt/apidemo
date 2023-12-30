@@ -1,7 +1,7 @@
-package nl.bsoft.apidemo.service;
+package nl.bsoft.apidemo.presenteren.service;
 
 import lombok.extern.slf4j.Slf4j;
-import nl.bsoft.apidemo.domain.BestuurlijkGebied;
+import nl.bsoft.apidemo.presenteren.domain.BestuurlijkGebied;
 import nl.bsoft.apidemo.library.model.dto.BestuurlijkGebiedDto;
 import nl.bsoft.apidemo.library.repository.BestuurlijkGebiedRepository;
 import org.springframework.beans.factory.annotation.Autowired;

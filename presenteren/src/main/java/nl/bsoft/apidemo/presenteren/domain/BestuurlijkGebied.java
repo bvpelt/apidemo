@@ -1,4 +1,4 @@
-package nl.bsoft.apidemo.domain;
+package nl.bsoft.apidemo.presenteren.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
