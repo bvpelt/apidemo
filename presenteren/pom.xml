@@ -5,13 +5,13 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.7-SNAPSHOT</version>
+        <version>0.8-SNAPSHOT</version>
 
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>presenteren</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.8-SNAPSHOT</version>
     <name>presenteren</name>
     <description>presenteren</description>
     <licenses>
