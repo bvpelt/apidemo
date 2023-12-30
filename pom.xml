@@ -48,9 +48,9 @@
         <com.google.code.version>3.0.2</com.google.code.version>
         <commons-codec.version>1.16.0</commons-codec.version>
         <doxyia-module-markdown.version>1.12.0</doxyia-module-markdown.version>
-        <flyway-core.version>10.4.0</flyway-core.version>
-        <io.swagger.version>2.2.19</io.swagger.version>
-        <jackson-bom.version>2.16.0</jackson-bom.version>
+        <flyway-core.version>10.4.1</flyway-core.version>
+        <io.swagger.version>2.2.20</io.swagger.version>
+        <jackson-bom.version>2.16.1</jackson-bom.version>
         <jakarta.activation.version>2.1.2</jakarta.activation.version>
         <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
@@ -63,8 +63,9 @@
         <net.logstash.logback.version>7.4</net.logstash.logback.version>
         <org.codehaus.version>3.4.0</org.codehaus.version>
         <openapi-plugin.version>6.6.0</openapi-plugin.version>
-        <org.apache.commons.version>3.13.0</org.apache.commons.version>
+        <org.apache.commons.version>3.14.0</org.apache.commons.version>
         <org.apache.http.version>4.5.14</org.apache.http.version>
+        <org.hibernate.orm.hibernate-spatial.version>6.4.1.Final</org.hibernate.orm.hibernate-spatial.version>
         <org.junit.jupiter.version>5.10.1</org.junit.jupiter.version>
         <org.locationtech>1.18.1</org.locationtech>
         <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
@@ -96,6 +97,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -103,7 +105,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+-->
             <dependency>
                 <groupId>nl.bsoft.apidemo</groupId>
                 <artifactId>library</artifactId>
@@ -187,7 +189,7 @@
             <dependency>
                 <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-spatial</artifactId>
-                <version>${hibernate.version}</version>
+                <version>${org.hibernate.orm.hibernate-spatial.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
