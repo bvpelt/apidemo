@@ -9,12 +9,14 @@ import nl.bsoft.apidemo.library.service.GeoService;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbaarLichaam;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -71,8 +73,11 @@ class LibraryApplicationTests {
             Assert.isTrue(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get().equals(bestuurlijkGebiedDto.getBeginGeldigheid()), "beginGeldigheid not mapped");
             Assert.isTrue(!bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent(), "eindgeldigheid not expected");
             Assert.isTrue(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()).equals(bestuurlijkGebiedDto.getGeometrie()), "geometrie not mapped");
-        } catch (Exception e) {
-            log.error("Error occured: {}", e.getMessage());
+        } catch (IOException e) {
+            log.error("IO Error occured: {}", e.getMessage());
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            log.error("Parse Error occured: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -100,8 +105,11 @@ class LibraryApplicationTests {
             Assert.isTrue(openbaarLichaam.getType().toString().equals(openbaarLichaamDto.getType()), "type not mapped");
             Assert.isTrue(openbaarLichaam.getNaam().equals(openbaarLichaamDto.getNaam()), "naam not mapped");
             Assert.isTrue(openbaarLichaam.getBestuurslaag().toString().equals(openbaarLichaamDto.getBestuurslaag()), "bestuurslaag not mapped");
-        } catch (Exception e) {
-            log.error("Error occured: {}", e.getMessage());
+        } catch (IOException e) {
+            log.error("IO Error occured: {}", e.getMessage());
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            log.error("Parse Error occured: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }

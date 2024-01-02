@@ -73,11 +73,11 @@
         <org.openapitools.nullable>0.2.6</org.openapitools.nullable>
         <org.postgresql.version>42.6.0</org.postgresql.version>
         <org.slf4j.version>2.0.9</org.slf4j.version>
-        <org.springframework.version>6.1.1</org.springframework.version>
+        <org.springframework.version>6.1.2</org.springframework.version>
         <org.springdoc.version>2.3.0</org.springdoc.version>
-        <org.tomcat.version>10.1.16</org.tomcat.version>
+        <org.tomcat.version>10.1.17</org.tomcat.version>
         <org.wololo.version>0.18.1</org.wololo.version>
-        <spring.cloud-version>2022.0.4</spring.cloud-version>
+        <!-- <spring.cloud-version>2022.0.4</spring.cloud-version> -->
     </properties>
 
     <modules>
