@@ -17,6 +17,7 @@ https://opensource.org/license/mit/
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd">
     <body>
         <menu name="Modules">
+            <item name="apidemo" href="../index.html"></item>
             <item name="presenteren" href="../presenteren/index.html"></item>
             <item name="synchroniseren" href="../synchroniseren/index.html"></item>
         </menu>
