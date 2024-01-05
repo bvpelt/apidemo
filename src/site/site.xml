@@ -15,6 +15,12 @@ https://opensource.org/license/mit/
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/DECORATION/1.6.0"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd">
+    <bannerLeft>
+        <name>BSoft</name>
+        <src>images/logo.png</src>
+        <href>https://www.bsoft.nl</href>
+    </bannerLeft>
+
     <body>
         <menu name="Modules">
             <item name="library" href="library/index.html"></item>
@@ -30,6 +36,7 @@ https://opensource.org/license/mit/
                 <item name="Dependency Management" href="dependency-management.html"></item>
                 <item name="Distribution Management" href="distribution-management.html"></item>
                 <item name="About" href="index.html"></item>
+                <item name="Issue management" href="issue-management.html"></item>
                 <item name="Licenses" href="licenses.html"></item>
                 <item name="Project Modules" href="modules.html"></item>
                 <item name="Plugin Management" href="plugin-management.html"></item>

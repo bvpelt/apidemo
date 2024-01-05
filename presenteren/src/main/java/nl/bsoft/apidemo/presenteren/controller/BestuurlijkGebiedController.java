@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -73,7 +75,8 @@ public class BestuurlijkGebiedController {
 
 
         log.info("BestuurlijkgebiedAPI - pageNumber: {}, pageSize: {}, sortBy: {}", pageNumber, pageSize, sortBy);
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+        Sort sortParameter = getSortOrder(sortBy);
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy)); //  Sort.by(sortBy).ascending());
 
         if (validAt == null) {
             validAt = LocalDate.now();
@@ -84,6 +87,31 @@ public class BestuurlijkGebiedController {
         Iterable<BestuurlijkGebied> bestuurlijkgebiedList = bestuurlijkGebiedAPIServer.getBestuurlijkgebieden(pageRequest, validAt);
 
         return ResponseEntity.ok(bestuurlijkgebiedList);
+    }
+
+    private Sort getSortOrder(String sortBy) {
+        Sort sortOrder = null;
+
+        // Split string in fields. Each field is separated by a ','
+        String fields [] = sortBy.split(",");
+
+        // For each field
+        for (String field: fields ) {
+            Sort.Direction direction = Sort.Direction.ASC;
+            String order [] = field.split(":");
+            if (order.length == 2) {  // Default is ascending
+                if (order[1].toUpperCase().equals("DESC")) {
+                    direction = Sort.Direction.DESC;
+                }
+            }
+            if (sortOrder == null) {
+                sortOrder = Sort.by(direction, field);
+            } else {
+                sortOrder.and(Sort.by(direction, field));
+            }
+        }
+
+        return sortOrder;
     }
 
     @Operation(

@@ -183,3 +183,5 @@ where b.md5hash is null;
 - functional interfaces https://www.geeksforgeeks.org/functional-interfaces-java/
 - flyway https://www.baeldung.com/database-migrations-with-flyway
 - postgis https://postgis.net/docs/reference.html#Measurement_Functions
+- maven documentation generation https://books.sonatype.com/mvnref-book/reference/site-generation.html
+- spring application events https://reflectoring.io/spring-boot-application-events-explained/
