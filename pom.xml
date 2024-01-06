@@ -16,12 +16,29 @@
     <name>API demo</name>
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
+
     <licenses>
         <license>
             <name>MIT</name>
             <url>https://opensource.org/license/mit/</url>
         </license>
     </licenses>
+
+    <issueManagement>
+        <system>git</system>
+        <url>https://github.com/bvpelt/apidemo/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/bvpelt/apidemo</connection>
+        <developerConnection>scm:git:https://github.com/bvpelt/apidemo</developerConnection>
+        <url>https://github.com/bvpelt/apidemo/</url>
+    </scm>
+
+    <organization>
+        <name>BSoft</name>
+        <url>http://bsoft.nl/</url>
+    </organization>
 
     <developers>
         <developer>
@@ -77,6 +94,7 @@
         <org.springdoc.version>2.3.0</org.springdoc.version>
         <org.tomcat.version>10.1.17</org.tomcat.version>
         <org.wololo.version>0.18.1</org.wololo.version>
+        <spring.cloud-version>2023.0.0</spring.cloud-version>
         <!-- <spring.cloud-version>2022.0.4</spring.cloud-version> -->
     </properties>
 
@@ -265,6 +283,11 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-report-plugin</artifactId>
+                <version>3.10.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>3.1.1</version>
                 <reportSets>
@@ -322,6 +345,11 @@
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-report-plugin</artifactId>
+                    <version>3.10.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.openapitools</groupId>

@@ -1,5 +1,8 @@
 package nl.bsoft.apidemo;
 
+import nl.bsoft.apidemo.presenteren.events.SpringBuiltInContextEventsListener;
+import nl.bsoft.apidemo.presenteren.events.SpringBuiltInEventsListener;
+import nl.bsoft.apidemo.presenteren.events.SpringBuiltInWebserverEventsListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,7 +14,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class PresenterenApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PresenterenApplication.class, args);
+
+        SpringApplication springApplication =
+                new SpringApplication(PresenterenApplication.class);
+        springApplication.addListeners(new SpringBuiltInEventsListener());
+        springApplication.addListeners(new SpringBuiltInContextEventsListener());
+        springApplication.addListeners(new SpringBuiltInWebserverEventsListener());
+        springApplication.run(args);
     }
 
 }
