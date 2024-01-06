@@ -198,3 +198,4 @@ where b.md5hash is null;
 - postgis https://postgis.net/docs/reference.html#Measurement_Functions
 - maven documentation generation https://books.sonatype.com/mvnref-book/reference/site-generation.html
 - spring application events https://reflectoring.io/spring-boot-application-events-explained/
+- spring boot documentation https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/
