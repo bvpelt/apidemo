@@ -26,7 +26,7 @@ public class OpenbaarLichaamDto implements Serializable {
 
     @Column(name = "oin", length = 24)
     private String oin;
-    
+
     @Column(name = "lichaamtype", length = 32, nullable = false)
     private String type;
 

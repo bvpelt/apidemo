@@ -6,16 +6,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.bsoft.apidemo.presenteren.domain.BestuurlijkGebied;
 import nl.bsoft.apidemo.library.model.dto.OpenbaarLichaamDto;
+import nl.bsoft.apidemo.presenteren.domain.BestuurlijkGebied;
 import nl.bsoft.apidemo.presenteren.service.OpenbaarLichaamAPIServer;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.Error;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.ExtendedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,10 +41,6 @@ public class OpenbaarLichaamController {
                     @ApiResponse(responseCode = "200", description = "OK.", content = {
                             @Content(mediaType = "application/hal+json", schema = @Schema(implementation = BestuurlijkGebied.class)),
                             @Content(mediaType = "application/problem+json", schema = @Schema(implementation = Error.class))
-                    }),
-                    @ApiResponse(responseCode = "400", description = "Bad request. Je request body bevat geen geldige JSON of de query wordt niet ondersteund door de API.", content = {
-                            @Content(mediaType = "application/hal+json", schema = @Schema(implementation = ExtendedError.class)),
-                            @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ExtendedError.class))
                     }),
                     @ApiResponse(responseCode = "401", description = "Unauthorized. Je hebt waarschijnlijk geen geldige `X-Api-Key` header meegestuurd.", content = {
                             @Content(mediaType = "application/hal+json", schema = @Schema(implementation = Error.class)),
@@ -63,21 +64,36 @@ public class OpenbaarLichaamController {
             value = "/api/openbarelichamen",
             produces = {"application/hal+json", "application/problem+json"}
     )
-    public ResponseEntity<Iterable<OpenbaarLichaamDto>> getOpenbareLichamen(@RequestParam(value = "pageNumber", defaultValue = "0", required = true) int pageNumber,
-                                                                            @RequestParam(value = "pageSize", defaultValue = "10", required = true) int pageSize,
-                                                                            @RequestParam(value = "sortedBy", defaultValue = "code", required = true) String sortBy) {
+    public ResponseEntity<?> getOpenbareLichamen(@RequestParam(value = "page", defaultValue = "0", required = true) int pageNumber,
+                                                 @RequestParam(value = "size", defaultValue = "10", required = true) int pageSize,
+                                                 @RequestParam(value = "sort", defaultValue = "code,desc", required = true) String[] sortBy,
+                                                 @RequestHeader(value = "X-Api-Key") String xapikey) {
 
-        log.info("OpenbaarLichaamAPI - pageNumber: {}, pageSize: {}, sortBy: {}", pageNumber, pageSize, sortBy);
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+        // validate input
+        if ((xapikey == null) || (xapikey.length() == 0)) {
+            log.warn("No api key specifed: \n{}");
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body("No api key specified");
+        }
 
-        Iterable<OpenbaarLichaamDto> openbaarLichaamDtos = openbaarLichaamAPIServer.getOpenbareLichamen(pageRequest);
+        // get request parameters
+        List<Sort.Order> sortParameter = ControllerSortUtil.getSortOrder(sortBy);
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortParameter));
 
-        return ResponseEntity.ok(openbaarLichaamDtos);
+        log.info("OpenbaarLichaamAPI starting query with parameters - pageNumber: {}, pageSize {}, sortedBy: {}", pageNumber, pageSize, Arrays.toString(sortBy));
+
+        // execute request
+        try {
+            Iterable<OpenbaarLichaamDto> openbaarLichaamDtos = openbaarLichaamAPIServer.getOpenbareLichamen(pageRequest);
+            return ResponseEntity.ok(openbaarLichaamDtos);
+        } catch (PropertyReferenceException e) {
+            log.warn("Invalid parameters: \n{}",e);
+            return ResponseEntity.status(HttpStatusCode.valueOf(400)).body("Invalid parameters: " + e.getMessage());
+        }
     }
 
     @Operation(
             operationId = "openbareLichamenGet",
-            summary = "Collectie of all openbarelichamen",
+            summary = "A specific openbarelichaam",
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK.", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BestuurlijkGebied.class)),

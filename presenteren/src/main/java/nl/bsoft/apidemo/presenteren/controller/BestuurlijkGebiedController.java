@@ -13,13 +13,14 @@ import nl.bsoft.bestuurlijkegrenzen.generated.model.ExtendedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -68,55 +69,28 @@ public class BestuurlijkGebiedController {
             value = "/api/bestuurlijkegebieden",
             produces = {"application/json", "application/problem+json"}
     )
-    public ResponseEntity<Iterable<BestuurlijkGebied>> getBestuurlijkgebieden(@RequestParam(value = "pageNumber", defaultValue = "0", required = true) int pageNumber,
-                                                                              @RequestParam(value = "pageSize", defaultValue = "10", required = true) int pageSize,
-                                                                              @RequestParam(value = "sortedBy", defaultValue = "identificatie", required = true) String sortBy,
+    public ResponseEntity<Iterable<BestuurlijkGebied>> getBestuurlijkgebieden(@RequestParam(value = "page", defaultValue = "0", required = true) int pageNumber,
+                                                                              @RequestParam(value = "size", defaultValue = "10", required = true) int pageSize,
+                                                                              @RequestParam(value = "sort", defaultValue = "identificatie,desc", required = true) String[] sortBy,
                                                                               @RequestParam("validAt") @Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt) {
 
-
-        log.info("BestuurlijkgebiedAPI - pageNumber: {}, pageSize: {}, sortBy: {}", pageNumber, pageSize, sortBy);
-        Sort sortParameter = getSortOrder(sortBy);
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy)); //  Sort.by(sortBy).ascending());
+        List<Order> sortParameter = ControllerSortUtil.getSortOrder(sortBy);
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortParameter));
 
         if (validAt == null) {
             validAt = LocalDate.now();
         }
 
-        log.info("Starting query with parameters - pageNumber: {}, pageSize {}, sortedBy: {}, validAt: {}", pageNumber, pageSize, sortBy, validAt);
+        log.info("BestuurlijkgebiedAPI starting query with parameters - pageNumber: {}, pageSize {}, sortedBy: {}, validAt: {}", pageNumber, pageSize, Arrays.toString(sortBy), validAt);
 
         Iterable<BestuurlijkGebied> bestuurlijkgebiedList = bestuurlijkGebiedAPIServer.getBestuurlijkgebieden(pageRequest, validAt);
 
         return ResponseEntity.ok(bestuurlijkgebiedList);
     }
 
-    private Sort getSortOrder(String sortBy) {
-        Sort sortOrder = null;
-
-        // Split string in fields. Each field is separated by a ','
-        String fields [] = sortBy.split(",");
-
-        // For each field
-        for (String field: fields ) {
-            Sort.Direction direction = Sort.Direction.ASC;
-            String order [] = field.split(":");
-            if (order.length == 2) {  // Default is ascending
-                if (order[1].toUpperCase().equals("DESC")) {
-                    direction = Sort.Direction.DESC;
-                }
-            }
-            if (sortOrder == null) {
-                sortOrder = Sort.by(direction, field);
-            } else {
-                sortOrder.and(Sort.by(direction, field));
-            }
-        }
-
-        return sortOrder;
-    }
-
     @Operation(
             operationId = "bestuurlijkeGebiedenIdentificatieGet",
-            summary = "Collectie of all bestuurlijkegebieden",
+            summary = "A specific bestuurlijkegebied",
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK.", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BestuurlijkGebied.class)),

@@ -1,10 +1,8 @@
 package nl.bsoft.apidemo.presenteren.events;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.*;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 
 @Slf4j
 public class SpringBuiltInWebserverEventsListener implements ApplicationListener<WebServerInitializedEvent> {
