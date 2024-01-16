@@ -174,31 +174,35 @@ public class BestuurlijkeGrenzenImportService {
             }
         } else {
             if (size == 1) { // exactly 1 entrie found, update
-                if (!compairBestuurlijkgebied(bestuurlijkGebied, bestuurlijkGebiedDtoList.get(0))) {
-                    log.info("Update and store entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
-
-                    LocalDateTime registrationMoment = LocalDateTime.now();
-
-                    BestuurlijkGebiedDto currentDto = bestuurlijkGebiedDtoList.get(0);
-                    BestuurlijkGebiedDto copyDto = CopyToDto(currentDto, registrationMoment);
-                    BestuurlijkGebiedDto lastDto = toDto(bestuurlijkGebied);
-
-                    // update current eindregistratie
-                    currentDto.setEindRegistratie(registrationMoment);
-                    lastDto.setBeginRegistratie(registrationMoment);
-                    lastDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
-                    // save historie
-                    bestuurlijkeGebiedenStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
-
-                    counter.updated();
-                } else {
-                    log.info("Identical entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
-                    counter.unmodified();
-                }
-            } else {
-                log.error("Not yet implemented");
-                counter.skipped();
+                addNewEntry(bestuurlijkGebied, bestuurlijkGebiedDtoList, counter);
+            } else { // size > 1 order is beginregistratie desc, begingeldigheid desc so first entry must be used as last entry
+                log.info("Found {} hits for identificatie: {}", size, bestuurlijkGebied.getIdentificatie());
+                addNewEntry(bestuurlijkGebied, bestuurlijkGebiedDtoList, counter);
             }
+        }
+    }
+
+    private void addNewEntry(BestuurlijkGebied bestuurlijkGebied, List<BestuurlijkGebiedDto> bestuurlijkGebiedDtoList, UpdateCounter counter) {
+        if (!compairBestuurlijkgebied(bestuurlijkGebied, bestuurlijkGebiedDtoList.get(0))) {
+            log.info("Update and store entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
+
+            LocalDateTime registrationMoment = LocalDateTime.now();
+
+            BestuurlijkGebiedDto currentDto = bestuurlijkGebiedDtoList.get(0);
+            BestuurlijkGebiedDto copyDto = CopyToDto(currentDto, registrationMoment);
+            BestuurlijkGebiedDto lastDto = toDto(bestuurlijkGebied);
+
+            // update current eindregistratie
+            currentDto.setEindRegistratie(registrationMoment);
+            lastDto.setBeginRegistratie(registrationMoment);
+            lastDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
+            // save historie
+            bestuurlijkeGebiedenStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
+
+            counter.updated();
+        } else {
+            log.info("Identical entry for identificatie: {}", bestuurlijkGebied.getIdentificatie());
+            counter.unmodified();
         }
     }
 

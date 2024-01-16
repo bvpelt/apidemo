@@ -86,7 +86,7 @@ public class OpenbaarLichaamController {
             Iterable<OpenbaarLichaamDto> openbaarLichaamDtos = openbaarLichaamAPIServer.getOpenbareLichamen(pageRequest);
             return ResponseEntity.ok(openbaarLichaamDtos);
         } catch (PropertyReferenceException e) {
-            log.warn("Invalid parameters: \n{}",e);
+            log.warn("Invalid parameters: \n{}", e);
             return ResponseEntity.status(HttpStatusCode.valueOf(400)).body("Invalid parameters: " + e.getMessage());
         }
     }

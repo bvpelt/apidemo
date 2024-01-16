@@ -5,12 +5,12 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.8-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>synchroniseren</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>synchroniseren</name>
     <description>synchroniseren</description>
     <licenses>

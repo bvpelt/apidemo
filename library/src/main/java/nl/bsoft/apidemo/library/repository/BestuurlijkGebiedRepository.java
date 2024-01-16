@@ -17,6 +17,10 @@ public interface BestuurlijkGebiedRepository extends PagingAndSortingRepository<
         CrudRepository<BestuurlijkGebiedDto, Long>,
         JpaSpecificationExecutor<BestuurlijkGebiedDto> {
 
+
+    @Query(
+            value =
+                    "SELECT * FROM bestuurlijkgebied WHERE identificatie = :identificatie order by beginregistratie desc, begingeldigheid desc", nativeQuery = true)
     List<BestuurlijkGebiedDto> findBestuurlijkGebiedDtoByIdentificatie(@Param("identificatie") String identificatie);
 
     @Query(
@@ -29,3 +33,4 @@ public interface BestuurlijkGebiedRepository extends PagingAndSortingRepository<
                     "SELECT * FROM bestuurlijkgebied WHERE (identificatie = :identificatie ) AND ((begingeldigheid <= :validAt) AND ((eindgeldigheid IS NULL) OR (eindgeldigheid > :validAt))) ", nativeQuery = true)
     List<BestuurlijkGebiedDto> findBestuurlijkGebiedDtoByIdentificatieActueel(@Param("identificatie") String identificatie, @Param("validAt") LocalDate validAt);
 }
+
