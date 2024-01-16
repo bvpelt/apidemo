@@ -35,16 +35,23 @@ This goal performs byte code analysis to determine missing or unused dependencie
 from the command line. It will fork the build and execute test-compile so there are class files to analyze.
 
 #### dependency:analyze-dep-mgt
-This goal looks at the dependencies after final resolution and looks for mismatches in your dependencyManagement section.
+
+This goal looks at the dependencies after final resolution and looks for mismatches in your dependencyManagement
+section.
 
 #### dependency:analyze-report
+
 This goal is used to include a report of the dependencies in the output of the maven-site-plugin.
 
 #### dependency:build-classpath
-This goal will output a classpath string of dependencies from the local repository to a file or log and optionally attach and deploy the file.
+
+This goal will output a classpath string of dependencies from the local repository to a file or log and optionally
+attach and deploy the file.
 
 #### dependency:list-repositories
-This goal lists all the repositories that this build depends upon. It shows repositories defined in your settings, poms, and declared in transitive dependency poms.
+
+This goal lists all the repositories that this build depends upon. It shows repositories defined in your settings, poms,
+and declared in transitive dependency poms.
 
 #### dependency:purge-local-repository
 
@@ -68,15 +75,18 @@ This is the same as the resolve goal except it includes the source attachments i
 want to download source attachments to your local repository.
 
 #### dependency:tree
-This goal is used to view the dependency hierarchy of the project currently being built. It will output the resolved tree of dependencies that the Maven build process actually uses.
+
+This goal is used to view the dependency hierarchy of the project currently being built. It will output the resolved
+tree of dependencies that the Maven build process actually uses.
 
 Options:
+
 - \-DoutputFile=/path/to/file
 - \-DoutputType=\<format\>
-  - text
-  - dot
-  - graphml
-  - tgf
+    - text
+    - dot
+    - graphml
+    - tgf
 
 ### Maven
 
@@ -98,6 +108,7 @@ mvn archetype:generate \
 ## Maven site
 
 ### site
+
 Generate documentation for each project
 
 ```bash
@@ -105,9 +116,11 @@ mvn site
 ```
 
 Generate documentation for the multimodule project
+
 ```bash
 mvn site:stage
 ```
+
 ### Displaying Available Updates
 
 ```bash
@@ -183,3 +196,6 @@ where b.md5hash is null;
 - functional interfaces https://www.geeksforgeeks.org/functional-interfaces-java/
 - flyway https://www.baeldung.com/database-migrations-with-flyway
 - postgis https://postgis.net/docs/reference.html#Measurement_Functions
+- maven documentation generation https://books.sonatype.com/mvnref-book/reference/site-generation.html
+- spring application events https://reflectoring.io/spring-boot-application-events-explained/
+- spring boot documentation https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/

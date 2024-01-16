@@ -96,6 +96,12 @@ public class OpenbareLichamenImportService {
     private OpenbaarLichaamDto CopyToDto(OpenbaarLichaamDto bron, LocalDateTime registratieMoment) {
         OpenbaarLichaamDto bestemming = new OpenbaarLichaamDto();
 
+        bestemming.setType(bron.getType());
+        bestemming.setBeginRegistratie(registratieMoment);
+        bestemming.setCode(bron.getCode());
+        bestemming.setNaam(bron.getNaam());
+        bestemming.setBestuurslaag(bron.getBestuurslaag());
+        bestemming.setOin(bron.getOin());
 
         return bestemming;
     }

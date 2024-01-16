@@ -6,12 +6,12 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.7</version>
+        <version>0.8</version>
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>library</artifactId>
-    <version>0.7</version>
+    <version>0.8</version>
     <name>library</name>
     <description>library</description>
     <packaging>jar</packaging>
@@ -239,6 +239,10 @@
                     <user>testuser</user>
                     <password>12345</password>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

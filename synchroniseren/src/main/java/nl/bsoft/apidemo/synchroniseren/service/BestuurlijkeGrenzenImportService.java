@@ -186,6 +186,7 @@ public class BestuurlijkeGrenzenImportService {
                     // update current eindregistratie
                     currentDto.setEindRegistratie(registrationMoment);
                     lastDto.setBeginRegistratie(registrationMoment);
+                    lastDto.setMd5hash(DigestUtils.md5Hex(bestuurlijkGebied.getGeometrie().toString().toUpperCase()));
                     // save historie
                     bestuurlijkeGebiedenStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
 
