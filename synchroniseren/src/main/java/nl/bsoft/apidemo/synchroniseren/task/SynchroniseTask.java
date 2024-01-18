@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.apidemo.synchroniseren.service.BestuurlijkeGrenzenProcessingService;
 import nl.bsoft.apidemo.synchroniseren.service.OpenbareLichamenProcessingService;
 import nl.bsoft.apidemo.synchroniseren.service.UpdateCounter;
+import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,13 +19,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class SynchroniseTask {
 
+    private final BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService;
+    private final OpenbareLichamenProcessingService openbareLichamenProcessingService;
+    private final TaskSemaphore taskSemaphore = TaskSemaphore.getINSTANCE();
     @Value("${nl.bsoft.apidemo.config.scheduleEnabled}")
     private boolean scheduleEnabled;
-
-    private final BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService;
-
-    private final OpenbareLichamenProcessingService openbareLichamenProcessingService;
-
 
     /*
     Cron syntax
@@ -37,11 +36,27 @@ public class SynchroniseTask {
         log.info("Executing task scheduleTask at: {} scheduledEnabled: {}", now, scheduleEnabled);
 
         if (scheduleEnabled) {
-            UpdateCounter counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
-            log.info("bestuurlijkegrenzen: {}", counter.toString());
+            UpdateCounter counter = new UpdateCounter();
 
-            counter = openbareLichamenProcessingService.processOpenbareLichamen();
-            log.info("openbarelichamen: {}", counter.toString());
+            boolean freeTask;
+
+            freeTask = taskSemaphore.getTaskSlot();
+            if (freeTask) {
+                counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
+                taskSemaphore.releaseTask();
+                log.info("bestuurlijkegrenzen: {}", counter.toString());
+            } else {
+                log.info("There is another task running to update bestuurlijkegebieden");
+            }
+
+            freeTask = taskSemaphore.getTaskSlot();
+            if (freeTask) {
+                counter = openbareLichamenProcessingService.processOpenbareLichamen();
+                taskSemaphore.releaseTask();
+                log.info("openbarelichamen: {}", counter.toString());
+            } else {
+                log.info("There is another task running to update openbarelichamen");
+            }
         }
     }
 }
