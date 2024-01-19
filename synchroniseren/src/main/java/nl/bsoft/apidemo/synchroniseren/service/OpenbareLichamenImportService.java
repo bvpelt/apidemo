@@ -1,14 +1,17 @@
 package nl.bsoft.apidemo.synchroniseren.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.apidemo.library.mapper.OpenbaarLichaamMapper;
 import nl.bsoft.apidemo.library.mapper.OpenbaarLichaamMapperImpl;
+import nl.bsoft.apidemo.library.model.dto.BestuurlijkGebiedDto;
 import nl.bsoft.apidemo.library.model.dto.OpenbaarLichaamDto;
 import nl.bsoft.apidemo.library.service.APIService;
 import nl.bsoft.apidemo.library.service.OpenbaarLichaamStorageService;
+import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
+import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbaarLichaam;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbareLichamenGet200Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -17,49 +20,58 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OpenbareLichamenImportService {
     private static final int MAX_PAGE_SIZE = 50;
     private final OpenbaarLichaamStorageService openbaarLichaamStorageService;
-
     private final OpenbaarLichaamMapper openbaarLichaamMapper = new OpenbaarLichaamMapperImpl();
     private final APIService APIService;
-
-    @Autowired
-    public OpenbareLichamenImportService(APIService APIService, OpenbaarLichaamStorageService openbaarLichaamStorageService) {
-        this.APIService = APIService;
-        this.openbaarLichaamStorageService = openbaarLichaamStorageService;
-    }
+    private final TaskSemaphore taskSemaphore;
 
     public UpdateCounter getAllOpenbareLichamen() {
         int page = 1;
         UpdateCounter counter = new UpdateCounter();
         boolean morePages = true;
-        while (morePages) {
-            OpenbareLichamenGet200Response openbareLichamenGet200Response = getOpenbaarLichaamPage(page, MAX_PAGE_SIZE);
 
-            if (openbareLichamenGet200Response != null) {
-                if (openbareLichamenGet200Response.getEmbedded() != null) {
-                    List<OpenbaarLichaam> openbaarLichaamList = openbareLichamenGet200Response.getEmbedded().getOpenbareLichamen();
-                    log.debug("Retrieved page: {}", page);
-                    if ((openbaarLichaamList != null) && (openbaarLichaamList.size() > 0)) {
-                        processOpenbareLichamen(counter, openbaarLichaamList);
+        log.info("Start synchronizing openbarelichamen");
+
+        if (taskSemaphore.getAndSetFree(false)) {
+            log.info("Start synchronizing openbarelichamen, locked task");
+
+            while (morePages) {
+                OpenbareLichamenGet200Response openbareLichamenGet200Response = getOpenbaarLichaamPage(page, MAX_PAGE_SIZE);
+
+                if (openbareLichamenGet200Response != null) {
+                    if (openbareLichamenGet200Response.getEmbedded() != null) {
+                        List<OpenbaarLichaam> openbaarLichaamList = openbareLichamenGet200Response.getEmbedded().getOpenbareLichamen();
+                        log.debug("Retrieved page: {}", page);
+                        if ((openbaarLichaamList != null) && (openbaarLichaamList.size() > 0)) {
+                            processOpenbareLichamen(counter, openbaarLichaamList);
+                        } else {
+                            log.info("No results in the list");
+                        }
+                        if (openbareLichamenGet200Response.getLinks().getNext() != null) {
+                            page++;
+                        } else {
+                            log.info("No more pages available");
+                            morePages = false;
+                        }
                     } else {
-                        log.info("No results in the list");
-                    }
-                    if (openbareLichamenGet200Response.getLinks().getNext() != null) {
-                        page++;
-                    } else {
-                        log.info("No more pages available");
                         morePages = false;
+                        log.error("No embedded openbare lichamen");
                     }
                 } else {
                     morePages = false;
-                    log.error("No embedded openbare lichamen");
                 }
-            } else {
-                morePages = false;
             }
+            taskSemaphore.getAndSetFree(true);
+            log.info("End   synchronizing openbarelichamen, released locked task");
+        } else {
+            log.info("Start synchronizing openbarelichamen, no lock skipped task");
         }
+
+        log.info("End   synchronizing bestuurlijkegebieden");
+
         return counter;
     }
 
@@ -114,8 +126,7 @@ public class OpenbareLichamenImportService {
                 openbaarLichaam.getNaam(),
                 openbaarLichaam.getBestuurslaag().getValue());
 
-
-        // Check if there is already a known bestuurlijkgebied
+        // Check if there is already a known openbaarlichaam
         List<OpenbaarLichaamDto> openbaarLichaamDtoList = openbaarLichaamStorageService.findByIdentificatie(openbaarLichaam.getCode().get());
         int size = openbaarLichaamDtoList.size();
         if (size == 0) { // no entries found
@@ -128,7 +139,8 @@ public class OpenbareLichamenImportService {
             counter.add();
         } else {
             if (size == 1) { // exactly 1 entrie found, update
-
+                addNewEntry(openbaarLichaam, openbaarLichaamDtoList, counter);
+                /*
                 if (!compairOpenbaarLichaam(openbaarLichaam, openbaarLichaamDtoList.get(0))) {
                     log.info("Update and store entry for code: {}", openbaarLichaam.getCode().get());
 
@@ -148,10 +160,34 @@ public class OpenbareLichamenImportService {
                     log.info("Identical entry for code: {}", openbaarLichaam.getCode().get());
                     counter.unmodified();
                 }
-            } else {
-                log.error("Not yet implemented");
-                counter.skipped();
+
+                 */
+            } else { // size > 1 order is beginregistratie desc, begingeldigheid desc so first entry must be used as last entry
+                log.info("Found {} hits for identificatie: {}", size, openbaarLichaam.getCode().get());
+                addNewEntry(openbaarLichaam, openbaarLichaamDtoList, counter);
             }
+        }
+    }
+
+    private void addNewEntry(OpenbaarLichaam openbaarLichaam, List<OpenbaarLichaamDto> openbaarLichaamDtoList, UpdateCounter counter) {
+        if (!compairOpenbaarLichaam(openbaarLichaam, openbaarLichaamDtoList.get(0))) {
+            log.info("Update and store entry for code: {}", openbaarLichaam.getCode().get());
+
+            LocalDateTime registrationMoment = LocalDateTime.now();
+
+            OpenbaarLichaamDto currentDto = openbaarLichaamDtoList.get(0);
+            OpenbaarLichaamDto copyDto = CopyToDto(currentDto, registrationMoment);
+            OpenbaarLichaamDto lastDto = toDto(openbaarLichaam);
+
+            // update current eindregistratie
+            currentDto.setEindRegistratie(registrationMoment);
+            lastDto.setBeginRegistratie(registrationMoment);
+            // save historie
+            openbaarLichaamStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
+            counter.updated();
+        } else {
+            log.info("Identical entry for code: {}", openbaarLichaam.getCode().get());
+            counter.unmodified();
         }
     }
 

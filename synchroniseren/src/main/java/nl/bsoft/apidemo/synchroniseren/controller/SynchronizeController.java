@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 @Controller
 public class SynchronizeController {
-
-    private TaskSemaphore taskSemaphore;
     private BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService;
     private OpenbareLichamenProcessingService openbareLichamenProcessingService;
 
@@ -24,49 +22,24 @@ public class SynchronizeController {
     SynchronizeController(BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService, OpenbareLichamenProcessingService openbareLichamenProcessingService, TaskSemaphore taskSemaphore) {
         this.bestuurlijkeGrenzenProcessingService = bestuurlijkeGrenzenProcessingService;
         this.openbareLichamenProcessingService = openbareLichamenProcessingService;
-        this.taskSemaphore = taskSemaphore;
     }
 
     @GetMapping("/bestuurlijkegebieden")
     public ResponseEntity startBestuurlijkgebied() {
-        boolean freeTask = taskSemaphore.getTaskSlot();
+
         UpdateCounter counter = new UpdateCounter();
 
-        log.info("Start synchronizing bestuurlijkegebieden, get task");
-
-        if (freeTask) {
-            counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
-
-            taskSemaphore.releaseTask();
-
-            log.info("End   processing - {} elements", counter.getProcessed());
-        } else {
-            log.info("There is another task running to update bestuurlijkegebieden");
-        }
-
-        log.info("End   synchronizing bestuurlijkegebieden, release task");
+        counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
 
         return ResponseEntity.ok(counter);
     }
 
     @GetMapping("/openbarelichamen")
     public ResponseEntity startOpenbaarLichaam() {
-        boolean freeTask = taskSemaphore.getTaskSlot();
+
         UpdateCounter counter = new UpdateCounter();
 
-        log.info("Start synchronizing openbarelichamen, get task");
-
-        if (freeTask) {
-            counter = openbareLichamenProcessingService.processOpenbareLichamen();
-
-            taskSemaphore.releaseTask();
-
-            log.info("End   processing - {} elements", counter.getProcessed());
-        } else {
-            log.info("There is another task running to update openbarelichamen");
-        }
-
-        log.info("End   synchronizing openbarelichamen, release task");
+        counter = openbareLichamenProcessingService.processOpenbareLichamen();
 
         return ResponseEntity.ok(counter);
     }

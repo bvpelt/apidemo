@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SynchConfig {
-
     private final TaskSemaphore taskSemaphore = TaskSemaphore.getINSTANCE();
-
     @Bean
     public TaskSemaphore getTaskSemaphore() {
         return this.taskSemaphore;

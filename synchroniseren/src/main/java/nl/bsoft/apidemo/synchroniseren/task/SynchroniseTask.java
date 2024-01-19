@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.apidemo.synchroniseren.service.BestuurlijkeGrenzenProcessingService;
 import nl.bsoft.apidemo.synchroniseren.service.OpenbareLichamenProcessingService;
 import nl.bsoft.apidemo.synchroniseren.service.UpdateCounter;
-import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,11 +17,8 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class SynchroniseTask {
-
     private final BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService;
     private final OpenbareLichamenProcessingService openbareLichamenProcessingService;
-    private final TaskSemaphore taskSemaphore;
-
     @Value("${nl.bsoft.apidemo.config.scheduleEnabled}")
     private boolean scheduleEnabled;
 
@@ -31,7 +27,8 @@ public class SynchroniseTask {
     <second> <minute> <hour> <day-of-month> <month> <day-of-week>
     pattern for each day at 22:00 is "0 0 22 * * ?"
      */
-    @Scheduled(cron = "0 45 08 * * ?", zone = "Europe/Amsterdam")
+    //@Scheduled(cron = "0 33 20 * * ?", zone = "Europe/Amsterdam")
+    @Scheduled(cron = "${nl.bsoft.apidemo.config.cronSchedule}", zone = "Europe/Amsterdam")
     public void scheduleTask() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -40,32 +37,13 @@ public class SynchroniseTask {
         if (scheduleEnabled) {
             UpdateCounter counter = new UpdateCounter();
 
-            boolean freeTask;
+            counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
+            log.info("Bestuurlijkegrenzen scheduled task result: {}", counter.toString());
 
-            log.info("Start synchronizing bestuurlijkegebieden, get task");
-
-            freeTask = taskSemaphore.getTaskSlot();
-            if (freeTask) {
-                counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
-                taskSemaphore.releaseTask();
-                log.info("bestuurlijkegrenzen: {}", counter.toString());
-            } else {
-                log.info("There is another task running to update bestuurlijkegebieden");
-            }
-
-            log.info("End   synchronizing bestuurlijkegebieden, release task");
-            log.info("Start synchronizing openbarelichamen, get task");
-
-            freeTask = taskSemaphore.getTaskSlot();
-            if (freeTask) {
-                counter = openbareLichamenProcessingService.processOpenbareLichamen();
-                taskSemaphore.releaseTask();
-                log.info("openbarelichamen: {}", counter.toString());
-            } else {
-                log.info("There is another task running to update openbarelichamen");
-            }
-
-            log.info("End   synchronizing openbarelichamen, release task");
+            counter = openbareLichamenProcessingService.processOpenbareLichamen();
+            log.info("Openbarelichamen scheduled task result: {}", counter.toString());
+        } else {
+            log.info("Scheduling not enabled");
         }
     }
 }
