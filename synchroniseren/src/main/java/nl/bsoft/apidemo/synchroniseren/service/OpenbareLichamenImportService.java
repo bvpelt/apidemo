@@ -140,28 +140,6 @@ public class OpenbareLichamenImportService {
         } else {
             if (size == 1) { // exactly 1 entrie found, update
                 addNewEntry(openbaarLichaam, openbaarLichaamDtoList, counter);
-                /*
-                if (!compairOpenbaarLichaam(openbaarLichaam, openbaarLichaamDtoList.get(0))) {
-                    log.info("Update and store entry for code: {}", openbaarLichaam.getCode().get());
-
-                    LocalDateTime registrationMoment = LocalDateTime.now();
-
-                    OpenbaarLichaamDto currentDto = openbaarLichaamDtoList.get(0);
-                    OpenbaarLichaamDto copyDto = CopyToDto(currentDto, registrationMoment);
-                    OpenbaarLichaamDto lastDto = toDto(openbaarLichaam);
-
-                    // update current eindregistratie
-                    currentDto.setEindRegistratie(registrationMoment);
-                    lastDto.setBeginRegistratie(registrationMoment);
-                    // save historie
-                    openbaarLichaamStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
-                    counter.updated();
-                } else {
-                    log.info("Identical entry for code: {}", openbaarLichaam.getCode().get());
-                    counter.unmodified();
-                }
-
-                 */
             } else { // size > 1 order is beginregistratie desc, begingeldigheid desc so first entry must be used as last entry
                 log.info("Found {} hits for identificatie: {}", size, openbaarLichaam.getCode().get());
                 addNewEntry(openbaarLichaam, openbaarLichaamDtoList, counter);
@@ -176,14 +154,14 @@ public class OpenbareLichamenImportService {
             LocalDateTime registrationMoment = LocalDateTime.now();
 
             OpenbaarLichaamDto currentDto = openbaarLichaamDtoList.get(0);
-            OpenbaarLichaamDto copyDto = CopyToDto(currentDto, registrationMoment);
+            //OpenbaarLichaamDto copyDto = CopyToDto(currentDto, registrationMoment);
             OpenbaarLichaamDto lastDto = toDto(openbaarLichaam);
 
             // update current eindregistratie
             currentDto.setEindRegistratie(registrationMoment);
             lastDto.setBeginRegistratie(registrationMoment);
             // save historie
-            openbaarLichaamStorageService.SaveWithHistory(currentDto, copyDto, lastDto);
+            openbaarLichaamStorageService.SaveWithHistory(currentDto, lastDto);
             counter.updated();
         } else {
             log.info("Identical entry for code: {}", openbaarLichaam.getCode().get());

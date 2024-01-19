@@ -2,6 +2,7 @@ package nl.bsoft.apidemo.library.repository;
 
 import nl.bsoft.apidemo.library.model.dto.OpenbaarLichaamDto;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -14,9 +15,8 @@ public interface OpenbaarLichaamRepository extends PagingAndSortingRepository<Op
         CrudRepository<OpenbaarLichaamDto, Long>,
         JpaSpecificationExecutor<OpenbaarLichaamDto> {
 
-    String FIND_ALL_OPENBAARLICHAAM_BY_IDENTIFICATIE_QUERY = "SELECT b " +
-            "FROM OpenbaarLichaamDto b " +
-            "WHERE b.code = :code ";
-
+    @Query(
+            value =
+                    "SELECT * FROM openbaarlichaam WHERE code = :code order by beginregistratie desc", nativeQuery = true)
     List<OpenbaarLichaamDto> findOpenbaarLichaamDtoByCode(@Param("code") String code);
 }
