@@ -5,14 +5,16 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.8</version>
+        <version>0.9</version>
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>presenteren</artifactId>
-    <version>0.8</version>
+    <version>0.9</version>
     <name>presenteren</name>
-    <description>This module presenteren exposes information as rest services about bestuurlijkegrenzen and openbarelichamen</description>
+    <description>This module presenteren exposes information as rest services about bestuurlijkegrenzen and
+        openbarelichamen
+    </description>
     <licenses>
         <license>
             <name>MIT</name>

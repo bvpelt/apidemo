@@ -41,4 +41,16 @@ public class UpdateCounter {
     private void processed() {
         this.processed++;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateCounter{" +
+                "added=" + added +
+                ", updated=" + updated +
+                ", unmodified=" + unmodified +
+                ", removed=" + removed +
+                ", skipped=" + skipped +
+                ", processed=" + processed +
+                '}';
+    }
 }

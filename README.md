@@ -158,6 +158,9 @@ For each feature (based on develop branch)
 - get a page of bestuurlijkgebieden: http://localhost:8080/api/bestuurlijkegebieden?pageNumber=5
 - get a single bestuurlijkgebied: http://localhost:8080/api/bestuurlijkegebieden/GM0221
 
+## Scheduler
+See https://www.baeldung.com/spring-scheduled-tasks 
+
 ## Usefull queries
 
 ```sql

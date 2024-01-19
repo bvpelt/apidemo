@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.apidemo.synchroniseren.service.BestuurlijkeGrenzenProcessingService;
 import nl.bsoft.apidemo.synchroniseren.service.OpenbareLichamenProcessingService;
 import nl.bsoft.apidemo.synchroniseren.service.UpdateCounter;
+import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,14 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class SynchroniszeController {
-
+public class SynchronizeController {
     private BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService;
-
     private OpenbareLichamenProcessingService openbareLichamenProcessingService;
 
     @Autowired
-    SynchroniszeController(BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService, OpenbareLichamenProcessingService openbareLichamenProcessingService) {
+    SynchronizeController(BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService, OpenbareLichamenProcessingService openbareLichamenProcessingService, TaskSemaphore taskSemaphore) {
         this.bestuurlijkeGrenzenProcessingService = bestuurlijkeGrenzenProcessingService;
         this.openbareLichamenProcessingService = openbareLichamenProcessingService;
     }
@@ -28,9 +27,9 @@ public class SynchroniszeController {
     @GetMapping("/bestuurlijkegebieden")
     public ResponseEntity startBestuurlijkgebied() {
 
-        UpdateCounter counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
+        UpdateCounter counter = new UpdateCounter();
 
-        log.info("End   processing - {} elements", counter.getProcessed());
+        counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
 
         return ResponseEntity.ok(counter);
     }
@@ -38,9 +37,9 @@ public class SynchroniszeController {
     @GetMapping("/openbarelichamen")
     public ResponseEntity startOpenbaarLichaam() {
 
-        UpdateCounter counter = openbareLichamenProcessingService.processOpenbareLichamen();
+        UpdateCounter counter = new UpdateCounter();
 
-        log.info("End   processing - {} elements", counter.getProcessed());
+        counter = openbareLichamenProcessingService.processOpenbareLichamen();
 
         return ResponseEntity.ok(counter);
     }
