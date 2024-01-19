@@ -21,15 +21,17 @@ public class SynchroniseTask {
 
     private final BestuurlijkeGrenzenProcessingService bestuurlijkeGrenzenProcessingService;
     private final OpenbareLichamenProcessingService openbareLichamenProcessingService;
-    private final TaskSemaphore taskSemaphore = TaskSemaphore.getINSTANCE();
+    private final TaskSemaphore taskSemaphore;
+
     @Value("${nl.bsoft.apidemo.config.scheduleEnabled}")
     private boolean scheduleEnabled;
 
     /*
     Cron syntax
     <second> <minute> <hour> <day-of-month> <month> <day-of-week>
+    pattern for each day at 22:00 is "0 0 22 * * ?"
      */
-    @Scheduled(cron = "0 0 22 * * ?", zone = "Europe/Amsterdam")
+    @Scheduled(cron = "0 45 08 * * ?", zone = "Europe/Amsterdam")
     public void scheduleTask() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -40,6 +42,8 @@ public class SynchroniseTask {
 
             boolean freeTask;
 
+            log.info("Start synchronizing bestuurlijkegebieden, get task");
+
             freeTask = taskSemaphore.getTaskSlot();
             if (freeTask) {
                 counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
@@ -49,6 +53,9 @@ public class SynchroniseTask {
                 log.info("There is another task running to update bestuurlijkegebieden");
             }
 
+            log.info("End   synchronizing bestuurlijkegebieden, release task");
+            log.info("Start synchronizing openbarelichamen, get task");
+
             freeTask = taskSemaphore.getTaskSlot();
             if (freeTask) {
                 counter = openbareLichamenProcessingService.processOpenbareLichamen();
@@ -57,6 +64,8 @@ public class SynchroniseTask {
             } else {
                 log.info("There is another task running to update openbarelichamen");
             }
+
+            log.info("End   synchronizing openbarelichamen, release task");
         }
     }
 }

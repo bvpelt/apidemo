@@ -9,7 +9,7 @@ nl:
               apikey: d379f340-6900-4b3c-9e10-b6a4296fdfca
               coordinatereferencesystem: epsg:28992
               maxpagesize: 50
-        scheduleEnabled: false
+        scheduleEnabled: true
 
 info:
   app:
