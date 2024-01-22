@@ -12,6 +12,7 @@ import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbaarLichaam;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbareLichamenGet200Response;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -27,7 +28,7 @@ public class OpenbareLichamenImportService {
     private final OpenbaarLichaamMapper openbaarLichaamMapper = new OpenbaarLichaamMapperImpl();
     private final APIService APIService;
     private final TaskSemaphore taskSemaphore;
-
+    @Async
     public UpdateCounter getAllOpenbareLichamen() {
         int page = 1;
         UpdateCounter counter = new UpdateCounter();

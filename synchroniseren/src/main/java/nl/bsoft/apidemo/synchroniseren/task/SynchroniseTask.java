@@ -26,9 +26,8 @@ public class SynchroniseTask {
     Cron syntax
     <second> <minute> <hour> <day-of-month> <month> <day-of-week>
     pattern for each day at 22:00 is "0 0 22 * * ?"
-     */
-    //@Scheduled(cron = "0 33 20 * * ?", zone = "Europe/Amsterdam")
-    @Scheduled(cron = "${nl.bsoft.apidemo.config.cronSchedule}", zone = "Europe/Amsterdam")
+    */
+    @Scheduled(cron = "0 5/10 * * * *", zone = "Europe/Amsterdam")
     public void scheduleTask() {
         LocalDateTime now = LocalDateTime.now();
 

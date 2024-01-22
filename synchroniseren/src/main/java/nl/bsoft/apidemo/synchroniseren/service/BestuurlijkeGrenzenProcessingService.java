@@ -3,6 +3,7 @@ package nl.bsoft.apidemo.synchroniseren.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -17,6 +18,7 @@ public class BestuurlijkeGrenzenProcessingService {
         this.bestuurlijkeGrenzenImportService = bestuurlijkeGrenzenImportService;
     }
 
+    @Async
     public UpdateCounter processBestuurlijkeGebieden() {
         log.info("Process all bestuurlijke gebieden");
 
