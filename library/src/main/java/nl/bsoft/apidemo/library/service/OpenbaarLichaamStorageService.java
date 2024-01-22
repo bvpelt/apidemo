@@ -26,10 +26,9 @@ public class OpenbaarLichaamStorageService {
         return savedOpenbaarLichaamDto;
     }
 
-    public OpenbaarLichaamDto SaveWithHistory(OpenbaarLichaamDto original, OpenbaarLichaamDto copy, OpenbaarLichaamDto last) {
-        log.debug("Saving with history original: {}\n copy: {}\n, last: {}", original.toString(), copy.toString(), last.toString());
+    public OpenbaarLichaamDto SaveWithHistory(OpenbaarLichaamDto original, OpenbaarLichaamDto last) {
+        log.debug("Saving with history original: {}\n, last: {}", original.toString(),  last.toString());
         OpenbaarLichaamDto savedOriginalDto = openbaarLichaamRepository.save(original);
-        OpenbaarLichaamDto savedCopyDto = openbaarLichaamRepository.save(copy);
         OpenbaarLichaamDto savedLastDto = openbaarLichaamRepository.save(last);
 
         return savedLastDto;

@@ -10,7 +10,7 @@ nl:
               coordinatereferencesystem: epsg:28992
               maxpagesize: 50
         scheduleEnabled: true
-        cronSchedule:  "0 02 21 * * ?"  # syntax <second> <minute> <hour> <day-of-month> <month> <day-of-week>
+        cronSchedule:  "0 16/2 19 * * ?"  # syntax <second> <minute> <hour> <day-of-month> <month> <day-of-week>
 
 info:
   app:

@@ -10,6 +10,7 @@ import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkeGebiedenGet200Response;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -27,6 +28,7 @@ public class BestuurlijkeGrenzenImportService {
     private final TaskSemaphore taskSemaphore;
 
 
+    @Async
     public UpdateCounter getAllBestuurlijkebebieden() {
         int page = 1;
         UpdateCounter counter = new UpdateCounter();
