@@ -12,7 +12,7 @@
 
     <groupId>nl.bsoft</groupId>
     <artifactId>apidemo</artifactId>
-    <version>0.9</version>
+    <version>0.10</version>
     <name>API demo</name>
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
@@ -59,7 +59,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <apidemo.library>0.9</apidemo.library>
+        <apidemo.library>0.10</apidemo.library>
         <com.betadriven.version>2.4</com.betadriven.version>
         <com.google.code.version>3.0.2</com.google.code.version>
         <commons-codec.version>1.16.0</commons-codec.version>
