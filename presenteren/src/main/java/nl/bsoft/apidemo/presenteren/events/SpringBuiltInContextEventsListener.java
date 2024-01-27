@@ -14,7 +14,6 @@ public class SpringBuiltInContextEventsListener implements ApplicationListener<C
             log.info("Event type: ContextRefreshedEvent\nA ContextRefreshedEvent is fired when an ApplicationContext is refreshed.\n" +
                     "\n" +
                     "The ContextRefreshedEvent comes from Spring directly and not from Spring Boot and does not extend SpringApplicationEvent.");
-            return;
         }
     }
 

@@ -12,7 +12,7 @@
 
     <groupId>nl.bsoft</groupId>
     <artifactId>apidemo</artifactId>
-    <version>0.10</version>
+    <version>0.11-SNAPSHOT</version>
     <name>API demo</name>
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
@@ -59,7 +59,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <apidemo.library>0.10</apidemo.library>
+        <apidemo.library>0.11-SNAPSHOT</apidemo.library>
+
         <com.betadriven.version>2.4</com.betadriven.version>
         <com.google.code.version>3.0.2</com.google.code.version>
         <commons-codec.version>1.16.0</commons-codec.version>
@@ -94,6 +95,7 @@
         <org.springdoc.version>2.3.0</org.springdoc.version>
         <org.tomcat.version>10.1.17</org.tomcat.version>
         <org.wololo.version>0.18.1</org.wololo.version>
+        <org.zalando.version>0.29.1</org.zalando.version>
         <spring.cloud-version>2023.0.0</spring.cloud-version>
         <!-- <spring.cloud-version>2022.0.4</spring.cloud-version> -->
     </properties>
@@ -268,6 +270,11 @@
                 <groupId>org.wololo</groupId>
                 <artifactId>jts2geojson</artifactId>
                 <version>${org.wololo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>problem-spring-web</artifactId>
+                <version>${org.zalando.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

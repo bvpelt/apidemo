@@ -4,32 +4,35 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.bsoft.apidemo.library.mapper.OpenbaarLichaamMapper;
 import nl.bsoft.apidemo.library.mapper.OpenbaarLichaamMapperImpl;
-import nl.bsoft.apidemo.library.model.dto.BestuurlijkGebiedDto;
+import nl.bsoft.apidemo.library.model.dto.AuditLogDto;
 import nl.bsoft.apidemo.library.model.dto.OpenbaarLichaamDto;
 import nl.bsoft.apidemo.library.service.APIService;
+import nl.bsoft.apidemo.library.service.AuditLogStorageService;
 import nl.bsoft.apidemo.library.service.OpenbaarLichaamStorageService;
 import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
-import nl.bsoft.bestuurlijkegrenzen.generated.model.BestuurlijkGebied;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbaarLichaam;
 import nl.bsoft.bestuurlijkegrenzen.generated.model.OpenbareLichamenGet200Response;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OpenbareLichamenImportService {
-    private static final int MAX_PAGE_SIZE = 50;
+public class OpenbareLichamenImportService extends ImportService {
+    //private static final int MAX_PAGE_SIZE = 50;
     private final OpenbaarLichaamStorageService openbaarLichaamStorageService;
+    private final AuditLogStorageService auditLogStorageService;
     private final OpenbaarLichaamMapper openbaarLichaamMapper = new OpenbaarLichaamMapperImpl();
     private final APIService APIService;
     private final TaskSemaphore taskSemaphore;
+
     @Async
-    public UpdateCounter getAllOpenbareLichamen() {
+    public UpdateCounter getAllOpenbareLichamen(LocalDate validAt) {
         int page = 1;
         UpdateCounter counter = new UpdateCounter();
         boolean morePages = true;
@@ -39,48 +42,62 @@ public class OpenbareLichamenImportService {
         if (taskSemaphore.getAndSetFree(false)) {
             log.info("Start synchronizing openbarelichamen, locked task");
 
-            while (morePages) {
-                OpenbareLichamenGet200Response openbareLichamenGet200Response = getOpenbaarLichaamPage(page, MAX_PAGE_SIZE);
+            LocalDateTime jobstart = LocalDateTime.now();
+            String jobName = "openbarelichamen";
+            String result = "SUCCESS";
+            AuditLogDto auditLog = createAuditLog(jobName, jobstart, validAt, JobStatus.START.name());
 
-                if (openbareLichamenGet200Response != null) {
-                    if (openbareLichamenGet200Response.getEmbedded() != null) {
-                        List<OpenbaarLichaam> openbaarLichaamList = openbareLichamenGet200Response.getEmbedded().getOpenbareLichamen();
-                        log.debug("Retrieved page: {}", page);
-                        if ((openbaarLichaamList != null) && (openbaarLichaamList.size() > 0)) {
-                            processOpenbareLichamen(counter, openbaarLichaamList);
+            auditLog = auditLogStorageService.Save(auditLog);
+
+            try {
+                while (morePages) {
+                    OpenbareLichamenGet200Response openbareLichamenGet200Response = getOpenbaarLichaamPage(page, MAX_PAGE_SIZE, validAt);
+
+                    if (openbareLichamenGet200Response != null) {
+                        if (openbareLichamenGet200Response.getEmbedded() != null) {
+                            List<OpenbaarLichaam> openbaarLichaamList = openbareLichamenGet200Response.getEmbedded().getOpenbareLichamen();
+                            log.debug("Retrieved page: {}", page);
+                            if ((openbaarLichaamList != null) && (openbaarLichaamList.size() > 0)) {
+                                processOpenbareLichamen(counter, openbaarLichaamList);
+                            } else {
+                                log.debug("No results in the list");
+                            }
+                            if (openbareLichamenGet200Response.getLinks().getNext() != null) {
+                                page++;
+                            } else {
+                                log.debug("No more pages available");
+                                morePages = false;
+                            }
                         } else {
-                            log.info("No results in the list");
-                        }
-                        if (openbareLichamenGet200Response.getLinks().getNext() != null) {
-                            page++;
-                        } else {
-                            log.info("No more pages available");
                             morePages = false;
+                            log.error("No embedded openbare lichamen");
                         }
                     } else {
                         morePages = false;
-                        log.error("No embedded openbare lichamen");
                     }
-                } else {
-                    morePages = false;
                 }
+            } catch (Exception ex) {
+                log.error("Error while updating page: {} with parameter validAt: {} message: {}", page, validAt, ex.toString());
+                result = ex.getMessage();
             }
+            AuditLogDto auditLogDtoEnd = createAuditLogEnd(auditLog, JobStatus.FINISHED.name(), counter, result);
+            auditLogDtoEnd = auditLogStorageService.Save(auditLogDtoEnd);
             taskSemaphore.getAndSetFree(true);
             log.info("End   synchronizing openbarelichamen, released locked task");
         } else {
             log.info("Start synchronizing openbarelichamen, no lock skipped task");
         }
-
         log.info("End   synchronizing bestuurlijkegebieden");
 
         return counter;
     }
 
-    public OpenbareLichamenGet200Response getOpenbaarLichaamPage(Integer page, Integer size) {
+    public OpenbareLichamenGet200Response getOpenbaarLichaamPage(Integer page, Integer size, LocalDate validAt) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(APIService.getApiUrl() + "/openbare-lichamen");
 
         uriComponentsBuilder.queryParam("page", page);
         uriComponentsBuilder.queryParam("pageSize", size);
+        uriComponentsBuilder.queryParam("geldigOp", validAt.toString());
         log.debug("using url: {}", uriComponentsBuilder.build().toUri());
         return APIService.getDirectly(uriComponentsBuilder.build().toUri(), OpenbareLichamenGet200Response.class);
     }
@@ -120,7 +137,7 @@ public class OpenbareLichamenImportService {
     }
 
     private void processOpenbareLichaam(UpdateCounter counter, OpenbaarLichaam openbaarLichaam) {
-        log.info("Openbaarlichaam - code: {}, oin: {}, type: {}, naam: {}, bestuurslaag: {}",
+        log.debug("Openbaarlichaam - code: {}, oin: {}, type: {}, naam: {}, bestuurslaag: {}",
                 openbaarLichaam.getCode().isPresent() ? openbaarLichaam.getCode().get() : "",
                 openbaarLichaam.getOin().isPresent() ? openbaarLichaam.getOin().get() : "",
                 openbaarLichaam.getType().getValue(),
@@ -131,7 +148,7 @@ public class OpenbareLichamenImportService {
         List<OpenbaarLichaamDto> openbaarLichaamDtoList = openbaarLichaamStorageService.findByIdentificatie(openbaarLichaam.getCode().get());
         int size = openbaarLichaamDtoList.size();
         if (size == 0) { // no entries found
-            log.info("Create and store new entry for code: {}", openbaarLichaam.getCode().get());
+            log.debug("Create and store new entry for code: {}", openbaarLichaam.getCode().get());
             OpenbaarLichaamDto openbaarLichaamDto = toDto(openbaarLichaam);
             LocalDateTime registrationMoment = LocalDateTime.now();
             openbaarLichaamDto.setBeginRegistratie(registrationMoment);
@@ -150,7 +167,7 @@ public class OpenbareLichamenImportService {
 
     private void addNewEntry(OpenbaarLichaam openbaarLichaam, List<OpenbaarLichaamDto> openbaarLichaamDtoList, UpdateCounter counter) {
         if (!compairOpenbaarLichaam(openbaarLichaam, openbaarLichaamDtoList.get(0))) {
-            log.info("Update and store entry for code: {}", openbaarLichaam.getCode().get());
+            log.debug("Update and store entry for code: {}", openbaarLichaam.getCode().get());
 
             LocalDateTime registrationMoment = LocalDateTime.now();
 
@@ -165,7 +182,7 @@ public class OpenbareLichamenImportService {
             openbaarLichaamStorageService.SaveWithHistory(currentDto, lastDto);
             counter.updated();
         } else {
-            log.info("Identical entry for code: {}", openbaarLichaam.getCode().get());
+            log.debug("Identical entry for code: {}", openbaarLichaam.getCode().get());
             counter.unmodified();
         }
     }

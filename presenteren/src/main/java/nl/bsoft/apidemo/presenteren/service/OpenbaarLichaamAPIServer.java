@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +22,10 @@ public class OpenbaarLichaamAPIServer {
         this.openbaarLichaamRepository = openbaarLichaamRepository;
     }
 
-    public Iterable<OpenbaarLichaamDto> getOpenbareLichamen(PageRequest pageRequest) {
+    public Iterable<OpenbaarLichaamDto> getOpenbareLichamen(LocalDateTime validAt, PageRequest pageRequest) {
         Iterable<OpenbaarLichaamDto> openbaarLichaamDtoList = new ArrayList<OpenbaarLichaamDto>();
 
-        openbaarLichaamDtoList = openbaarLichaamRepository.findAll(pageRequest);
+        openbaarLichaamDtoList = openbaarLichaamRepository.findOpenbaarLichamenDtoByCodeAtDate(validAt, pageRequest);
         return openbaarLichaamDtoList;
     }
 
@@ -32,6 +33,14 @@ public class OpenbaarLichaamAPIServer {
         List<OpenbaarLichaamDto> openbaarLichaamDtoList = new ArrayList<OpenbaarLichaamDto>();
 
         openbaarLichaamDtoList = openbaarLichaamRepository.findOpenbaarLichaamDtoByCode(code);
+
+        return openbaarLichaamDtoList;
+    }
+
+    public List<OpenbaarLichaamDto> getOpenbareLichaamAtDate(LocalDateTime validAt, String code) {
+        List<OpenbaarLichaamDto> openbaarLichaamDtoList = new ArrayList<OpenbaarLichaamDto>();
+
+        openbaarLichaamDtoList = openbaarLichaamRepository.findOpenbaarLichaamDtoByCodeAtDate(validAt, code);
 
         return openbaarLichaamDtoList;
     }

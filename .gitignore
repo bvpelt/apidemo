@@ -18,3 +18,5 @@ buildNumber.properties
 .idea
 a.a
 a.b
+*.pg_dump
+2024-01-27_ambtsgebied.pg_dump

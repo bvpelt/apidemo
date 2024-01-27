@@ -5,12 +5,13 @@
     <parent>
         <groupId>nl.bsoft</groupId>
         <artifactId>apidemo</artifactId>
-        <version>0.10</version>
+        <version>0.11-SNAPSHOT</version>
+
     </parent>
 
     <groupId>nl.bsoft.apidemo</groupId>
     <artifactId>presenteren</artifactId>
-    <version>0.10</version>
+    <version>0.11-SNAPSHOT</version>
     <name>presenteren</name>
     <description>This module presenteren exposes information as rest services about bestuurlijkegrenzen and
         openbarelichamen
@@ -116,7 +117,6 @@
         <dependency>
             <groupId>org.zalando</groupId>
             <artifactId>problem-spring-web</artifactId>
-            <version>0.29.1</version>
         </dependency>
 
         <!-- test -->

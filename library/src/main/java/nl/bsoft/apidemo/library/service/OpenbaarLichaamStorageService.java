@@ -27,7 +27,7 @@ public class OpenbaarLichaamStorageService {
     }
 
     public OpenbaarLichaamDto SaveWithHistory(OpenbaarLichaamDto original, OpenbaarLichaamDto last) {
-        log.debug("Saving with history original: {}\n, last: {}", original.toString(),  last.toString());
+        log.debug("Saving with history original: {}\n, last: {}", original.toString(), last.toString());
         OpenbaarLichaamDto savedOriginalDto = openbaarLichaamRepository.save(original);
         OpenbaarLichaamDto savedLastDto = openbaarLichaamRepository.save(last);
 

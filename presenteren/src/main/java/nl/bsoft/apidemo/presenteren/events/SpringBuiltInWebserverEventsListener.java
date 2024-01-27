@@ -15,7 +15,6 @@ public class SpringBuiltInWebserverEventsListener implements ApplicationListener
             log.info("Event type: WebServerInitializedEvent\nIf we’re using a web server, a WebServerInitializedEvent is fired after the web server is ready. ServletWebServerInitializedEvent and ReactiveWebServerInitializedEvent are the servlet and reactive variants, respectively.\n" +
                     "\n" +
                     "The WebServerInitializedEvent does not extend SpringApplicationEvent.");
-            return;
         }
     }
 

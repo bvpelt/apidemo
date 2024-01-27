@@ -42,12 +42,12 @@ public class APIService extends ExternalRequestService {
     @Autowired
     public APIService(ObjectMapper objectMapper, HttpClient httpClient, Duration requestDuration) {
         super(objectMapper, httpClient, requestDuration);
-        log.info("Started BestuurlijkGebiedService with apiUrl: {}, apkKey: {}, CRS: {}", apiUrl, apiKey, coordinateReferenceSystem);
+        log.debug("Started BestuurlijkGebiedService with apiUrl: {}, apkKey: {}, CRS: {}", apiUrl, apiKey, coordinateReferenceSystem);
     }
 
     @Override
     public HttpRequest.Builder request(URI uri) {
-        log.info("Started BestuurlijkGebiedService building request with apiUrl: {}, apkKey: {}, CRS: {}", apiUrl, apiKey, coordinateReferenceSystem);
+        log.debug("Started BestuurlijkGebiedService building request with apiUrl: {}, apkKey: {}, CRS: {}", apiUrl, apiKey, coordinateReferenceSystem);
         HttpRequest.Builder request =
                 super.request(uri)
                         .header("Content-Crs", coordinateReferenceSystem)

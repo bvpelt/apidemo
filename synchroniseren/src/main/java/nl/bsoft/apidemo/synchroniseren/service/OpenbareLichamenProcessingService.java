@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,9 +21,9 @@ public class OpenbareLichamenProcessingService {
     }
 
     @Async
-    public UpdateCounter processOpenbareLichamen() {
-        log.info("Process all openbare lichamen");
+    public UpdateCounter processOpenbareLichamen(LocalDate validAt) {
+        log.debug("Process all openbare lichamen");
 
-        return openbareLichamenImportService.getAllOpenbareLichamen();
+        return openbareLichamenImportService.getAllOpenbareLichamen(validAt);
     }
 }

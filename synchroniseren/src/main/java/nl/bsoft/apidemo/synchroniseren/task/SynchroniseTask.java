@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -30,16 +31,17 @@ public class SynchroniseTask {
     @Scheduled(cron = "0 5/10 * * * *", zone = "Europe/Amsterdam")
     public void scheduleTask() {
         LocalDateTime now = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
 
         log.info("Executing task scheduleTask at: {} scheduledEnabled: {}", now, scheduleEnabled);
 
         if (scheduleEnabled) {
             UpdateCounter counter = new UpdateCounter();
 
-            counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden();
+            counter = bestuurlijkeGrenzenProcessingService.processBestuurlijkeGebieden(currentDate);
             log.info("Bestuurlijkegrenzen scheduled task result: {}", counter.toString());
 
-            counter = openbareLichamenProcessingService.processOpenbareLichamen();
+            counter = openbareLichamenProcessingService.processOpenbareLichamen(currentDate);
             log.info("Openbarelichamen scheduled task result: {}", counter.toString());
         } else {
             log.info("Scheduling not enabled");

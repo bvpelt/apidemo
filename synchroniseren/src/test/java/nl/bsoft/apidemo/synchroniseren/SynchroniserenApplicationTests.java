@@ -1,5 +1,7 @@
 package nl.bsoft.apidemo.synchroniseren;
 
+import lombok.extern.slf4j.Slf4j;
+import nl.bsoft.apidemo.synchroniseren.service.JobStatus;
 import nl.bsoft.apidemo.synchroniseren.util.TaskSemaphore;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.util.Assert;
@@ -10,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
 @SpringBootTest
+@Slf4j
 class SynchroniserenApplicationTests {
 
     @Test
@@ -49,5 +52,19 @@ class SynchroniserenApplicationTests {
         Assert.equals(1, taskSemaphore.availableSlots());
         Assert.equals(true, taskSemaphore.getTaskSlot());
 
+    }
+
+    @Test
+    public void testJobStatus() {
+        String status;
+        log.info("Status start: {}", JobStatus.START);
+        Assert.equals("START", JobStatus.START.name());
+
+        status = JobStatus.START.name();
+        log.info("Status start: {}", status);
+
+        status = JobStatus.START.toString();
+        Assert.equals("START", status);
+        log.info("Status start: {}", status);
     }
 }

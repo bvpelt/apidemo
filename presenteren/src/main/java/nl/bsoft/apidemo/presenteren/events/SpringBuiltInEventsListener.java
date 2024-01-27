@@ -51,7 +51,6 @@ public class SpringBuiltInEventsListener implements ApplicationListener<SpringAp
             log.info("Event type: ApplicationFailedEvent\nAn ApplicationFailedEvent is fired if there is an exception and the application fails to start. This can happen at any time during startup.\n" +
                     "\n" +
                     "We can use this to perform some tasks like execute a script or notify on startup failure.");
-            return;
         }
     }
 

@@ -7,8 +7,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SynchConfig {
     private final TaskSemaphore taskSemaphore = TaskSemaphore.getINSTANCE();
+
     @Bean
     public TaskSemaphore getTaskSemaphore() {
         return this.taskSemaphore;
     }
+
+    /*
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper().registerModules(
+//                new ProblemModule(),
+                new ConstraintViolationProblemModule());
+    }
+
+     */
 }
