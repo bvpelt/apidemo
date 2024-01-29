@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -26,9 +27,15 @@ class SynchroniserenApplicationTests {
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
         TaskSemaphore taskSemaphore = TaskSemaphore.getINSTANCE();
 
-        IntStream.range(0, threads)
-                .forEach(user -> executorService.execute(taskSemaphore::getTaskSlot));
+        try {
+            IntStream.range(0, threads)
+                    .forEach(user -> executorService.execute(taskSemaphore::getTaskSlot));
+            executorService.awaitTermination(2, TimeUnit.SECONDS);
+        } catch (Exception ex) {
+            log.error("Error duing execution of task");
+        }
         executorService.shutdown();
+        log.debug("Executor stopped");
 
         Assert.equals(0, taskSemaphore.availableSlots());
         Assert.equals(false, taskSemaphore.getTaskSlot());
@@ -42,8 +49,13 @@ class SynchroniserenApplicationTests {
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
         TaskSemaphore taskSemaphore = TaskSemaphore.getINSTANCE();
 
-        IntStream.range(0, threads)
-                .forEach(user -> executorService.execute(taskSemaphore::getTaskSlot));
+        try {
+            IntStream.range(0, threads)
+                    .forEach(user -> executorService.execute(taskSemaphore::getTaskSlot));
+            executorService.awaitTermination(2, TimeUnit.SECONDS);
+        } catch (Exception ex) {
+            log.error("Error duing execution of task");
+        }
         executorService.shutdown();
 
         Assert.equals(0, taskSemaphore.availableSlots());
