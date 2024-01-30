@@ -69,4 +69,23 @@ public class AuditLogDto {
     public int hashCode() {
         return Objects.hash(jobid, jobname, jobstate, validat, result, registratie, added, updated, unmodified, removed, skipped, processed);
     }
+
+    @Override
+    public String toString() {
+        return "AuditLogDto{" +
+                "id=" + id +
+                ", jobid='" + jobid + '\'' +
+                ", jobname='" + jobname + '\'' +
+                ", jobstate='" + jobstate + '\'' +
+                ", validat=" + validat +
+                ", result='" + result + '\'' +
+                ", registratie=" + registratie +
+                ", added=" + added +
+                ", updated=" + updated +
+                ", unmodified=" + unmodified +
+                ", removed=" + removed +
+                ", skipped=" + skipped +
+                ", processed=" + processed +
+                '}';
+    }
 }
