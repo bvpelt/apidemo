@@ -6,10 +6,8 @@ The functionality consists of:
 
 - retrieving informatie from https://brk.basisregistraties.overheid.nl/api/bestuurlijke-grenzen/v2 to get
   bestuurlijkegrenzen and openbarelichamen (in order to get this working the api definition is slightly changed from
-  [bestuurlijkegrenzenV2.0.0.yaml](bestuurlijkegrenzenV2.0.0.yaml)
-  to [bestuurlijkegrenzenV2.0.1.yaml](bestuurlijkegrenzenV2.0.1.yaml)). OpenAPI tools are used to generate the model of
-  the
-  bestuurlijkegrenzen API.
+  [bestuurlijkegrenzenV2.0.0.yaml](bestuurlijkegrenzenV2.0.0.yaml) to [bestuurlijkegrenzenV2.0.1.yaml](bestuurlijkegrenzenV2.0.1.yaml)). OpenAPI tools are used to generate the model of
+  the bestuurlijkegrenzen API.
 - store retrieved information in a local postgres database using jpa repositories
 - retrieve stored information
 
