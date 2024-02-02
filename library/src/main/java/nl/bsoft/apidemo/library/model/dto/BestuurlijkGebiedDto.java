@@ -36,9 +36,6 @@ public class BestuurlijkGebiedDto implements Serializable {
     @Column(name = "md5hash", nullable = false)
     private String md5hash;
 
-    @Column(name = "geometrie", nullable = false, columnDefinition = "geometry(Geometry,28992)")
-    private Geometry geometrie;
-
     @Column(name = "begingeldigheid", nullable = false)
     private LocalDate beginGeldigheid;
 

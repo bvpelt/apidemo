@@ -72,7 +72,6 @@ class LibraryApplicationTests {
             Assert.isTrue(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().isPresent(), "begin geldigheid not present");
             Assert.isTrue(bestuurlijkGebied.getEmbedded().getMetadata().getBeginGeldigheid().get().equals(bestuurlijkGebiedDto.getBeginGeldigheid()), "beginGeldigheid not mapped");
             Assert.isTrue(!bestuurlijkGebied.getEmbedded().getMetadata().getEindGeldigheid().isPresent(), "eindgeldigheid not expected");
-            Assert.isTrue(geoService.geoJsonToJTS(bestuurlijkGebied.getGeometrie()).equals(bestuurlijkGebiedDto.getGeometrie()), "geometrie not mapped");
         } catch (IOException e) {
             log.error("IO Error occured: {}", e.getMessage());
             throw new RuntimeException(e);
