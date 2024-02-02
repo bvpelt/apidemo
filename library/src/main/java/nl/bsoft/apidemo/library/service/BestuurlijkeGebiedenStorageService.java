@@ -19,14 +19,14 @@ public class BestuurlijkeGebiedenStorageService {
         this.bestuurlijkGebiedRepository = bestuurlijkGebiedRepository;
     }
 
-    public BestuurlijkGebiedDto Save(BestuurlijkGebiedDto bestuurlijkGebiedDto) {
+    public BestuurlijkGebiedDto save(BestuurlijkGebiedDto bestuurlijkGebiedDto) {
         log.debug("Saving {}", bestuurlijkGebiedDto.toString());
         BestuurlijkGebiedDto savedBestuurlijkGebiedDto = bestuurlijkGebiedRepository.save(bestuurlijkGebiedDto);
 
         return savedBestuurlijkGebiedDto;
     }
 
-    public BestuurlijkGebiedDto SaveWithHistory(BestuurlijkGebiedDto original, BestuurlijkGebiedDto copy, BestuurlijkGebiedDto last) {
+    public BestuurlijkGebiedDto saveWithHistory(BestuurlijkGebiedDto original, BestuurlijkGebiedDto copy, BestuurlijkGebiedDto last) {
         log.debug("Saving with history original: {}\n copy: {}\n, last: {}", original.toString(), copy.toString(), last.toString());
         BestuurlijkGebiedDto savedOriginalDto = bestuurlijkGebiedRepository.save(original);
         BestuurlijkGebiedDto savedCopyDto = bestuurlijkGebiedRepository.save(copy);

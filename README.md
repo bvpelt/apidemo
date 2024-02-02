@@ -251,25 +251,53 @@ from openbaarlichaam o
 where b.md5hash is null;
 
 -- Show geometry for bestuurlijkgebied with id 2
-select ST_AsText(ST_GeomFromWKB(geometrie)) from bestuurlijkgebied where id = 2;
+select ST_AsText(ST_GeomFromWKB(geometrie))
+from bestuurlijkgebied
+where id = 2;
 
-select b.id,b.identificatie, domein, gebiedtype, md5hash, b.begingeldigheid, b.eindgeldigheid, b.beginregistratie, b.eindregistratie, o.code, o.oin, o.lichaamtype, o.naam, o.bestuurslaag, o.beginregistratie, o.eindregistratie 
-from bestuurlijkgebied b 
-    left join openbaarlichaam o on (b.identificatie = o.code) 
-where b.identificatie = 'WS0155' and b.eindregistratie is null and o.eindregistratie is null 
+select b.id,
+       b.identificatie,
+       domein,
+       gebiedtype,
+       md5hash,
+       b.begingeldigheid,
+       b.eindgeldigheid,
+       b.beginregistratie,
+       b.eindregistratie,
+       o.code,
+       o.oin,
+       o.lichaamtype,
+       o.naam,
+       o.bestuurslaag,
+       o.beginregistratie,
+       o.eindregistratie
+from bestuurlijkgebied b
+         left join openbaarlichaam o on (b.identificatie = o.code)
+where b.identificatie = 'WS0155'
+  and b.eindregistratie is null
+  and o.eindregistratie is null
 order by b.begingeldigheid, b.beginregistratie;
 
-select * from auditlog;
+select *
+from auditlog;
 
 -- job history for a bestuurlijkgebied
-select b.identificatie, b.beginregistratie, b.eindregistratie, a.id, a.jobid, a.jobname, a.jobstate, a.registratie, l.* 
-from bestuurlijkgebied b 
-    left join auditlog a on (b.beginregistratie = a.registratie) 
-    left join auditlog l on (a.jobid = l.jobid) 
-where b.identificatie = 'GM0014' and 
-      a.jobstate = 'START' and 
-      l.jobstate = 'FINISHED' and 
-      a.jobname = 'bestuurlijkegebieden' 
+select b.identificatie,
+       b.beginregistratie,
+       b.eindregistratie,
+       a.id,
+       a.jobid,
+       a.jobname,
+       a.jobstate,
+       a.registratie,
+       l.*
+from bestuurlijkgebied b
+         left join auditlog a on (b.beginregistratie = a.registratie)
+         left join auditlog l on (a.jobid = l.jobid)
+where b.identificatie = 'GM0014'
+  and a.jobstate = 'START'
+  and l.jobstate = 'FINISHED'
+  and a.jobname = 'bestuurlijkegebieden'
 order by b.identificatie, b.beginregistratie;
 
 ```
@@ -280,8 +308,10 @@ Synchronize
 See auditlog
 
 ```sql
-select * from auditlog;
- id  |                jobid                 |       jobname        | jobstate |  validat   | result  |        registratie         | added | updated | unmodified | removed | skipped | processed 
+select *
+from auditlog;
+id
+|                jobid                 |       jobname        | jobstate |  validat   | result  |        registratie         | added | updated | unmodified | removed | skipped | processed 
 -----+--------------------------------------+----------------------+----------+------------+---------+----------------------------+-------+---------+------------+---------+---------+-----------
    1 | 4011a8e7-a501-4ab9-bb8c-dee4db473e6e | openbarelichamen     | START    | 2020-01-01 |         | 2024-01-27 17:01:56.580713 |     0 |       0 |          0 |       0 |       0 |         0
    2 | 4011a8e7-a501-4ab9-bb8c-dee4db473e6e | openbarelichamen     | FINISHED | 2020-01-01 | SUCCESS | 2024-01-27 17:02:01.892638 |   389 |       0 |          0 |       0 |       0 |       389
@@ -325,6 +355,7 @@ select * from auditlog;
 ```
 
 find removed bestuurlijkegebieden
+
 ```sql
 select * from auditlog where jobstate = 'START' and jobname = 'bestuurlijkegebieden';
 id  |                jobid                 |       jobname        | jobstate |  validat   | result |        registratie         | added | updated | unmodified | removed | skipped | processed 
@@ -495,8 +526,15 @@ from bestuurlijkgebied a
 order by a.identificatie, a.begingeldigheid, a.beginregistratie
 ;
   
+-- Find changed registration moments
+
+select a.registratie, b.registratie, b.added, b.updated, b.unmodified, b.removed, b.skipped, b.processed from auditlog a, auditlog b
+where a.registratie in (select distinct(registratie) as registratie from locatie) and
+  b.jobid = a.jobid and
+  a.id <> b.id;
 
 ```
+
 ## Resources
 
 - mapstruct https://mapstruct.org/

@@ -43,7 +43,7 @@ public class BestuurlijkGebied implements Serializable {
         this.identificatie = bron.getIdentificatie();
         this.domein = bron.getDomein();
         this.type = bron.getType();
-        this.geometrie = geoMapper.geoJTSToJson(bron.getGeometrie());
+        //this.geometrie = geoMapper.geoJTSToJson(bron.getGeometrie());
         this.beginGeldigheid = bron.getBeginGeldigheid();
         this.eindGeldigheid = bron.getEindGeldigheid();
         this.beginRegistratie = bron.getBeginRegistratie();

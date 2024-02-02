@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.locationtech.jts.geom.Geometry;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
