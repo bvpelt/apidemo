@@ -93,7 +93,7 @@
         <org.slf4j.version>2.0.9</org.slf4j.version>
         <org.springframework.version>6.1.2</org.springframework.version>
         <org.springdoc.version>2.3.0</org.springdoc.version>
-        <org.tomcat.version>10.1.17</org.tomcat.version>
+        <org.tomcat.version>10.1.19</org.tomcat.version>
         <org.wololo.version>0.18.1</org.wololo.version>
         <org.zalando.version>0.29.1</org.zalando.version>
         <spring.cloud-version>2023.0.0</spring.cloud-version>
